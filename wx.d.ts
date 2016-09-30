@@ -8,6 +8,7 @@
 *                                               *
 ************************************************/
 
+
 interface IStatus {
     /*
      * 收到开发者服务成功返回的回调函数，res = {data: '开发者服务器返回的内容'}
@@ -132,7 +133,6 @@ interface IPlayBackgroundAudioOption extends IStatus {
      */
     coverImgUrl?: string;
 }
-
 
 interface ISeekBackgroundAudioOption extends IStatus {
     /*
@@ -839,3 +839,69 @@ declare var wx: {
     requestPayment(opts: IrequestPaymentOption): void;
 
 }
+
+interface Application {
+    setData: (obj: any) => void;
+    getCurrentPage: () => Page;
+}
+
+interface AppConstructor {
+    new (): Application;
+    (opts: {
+        /**
+         * 生命周期函数--监听小程序初始化
+         */
+        onLaunch?: () => void;
+        /**
+         * 生命周期函数--监听小程序显示
+         */
+        onShow?: () => void;
+        /**
+         * 生命周期函数--监听小程序隐藏
+         */
+        onHide?: () => void;
+    }): Application;
+}
+
+declare var App: AppConstructor;
+declare function getApp(): Application;
+
+interface Page {
+    setData: (obj: any) => void;
+}
+
+interface PageConstructor {
+    new (): Page;
+    (opts: {
+        /**
+         * 页面的初始数据
+         */
+        data?: any;
+        /**
+         * 页面的初始数据
+         */
+        onLoad?: () => void;
+        /**
+         * 生命周期函数--监听页面初次渲染完成
+         */
+        onReady?: () => void;
+        /**
+         * 生命周期函数--监听页面显示
+         */
+        onShow?: () => void;
+        /**
+         * 生命周期函数--监听页面隐藏
+         */
+        onHide?: () => void;
+        /**
+         * 生命周期函数--监听页面卸载
+         */
+        onUnload?: () => void;
+        /**
+         * 页面相关事件处理函数--监听用户下拉动作
+         */
+        onPullDownRefreash?: () => void;
+    }): Page;
+}
+
+declare var Page: PageConstructor;
