@@ -21,7 +21,31 @@ const Types = {
 	"object/string": "any"
 };
 
-const ApiUrl = "http://mp.weixin.qq.com/debug/wxadoc/dev/api/";
+const ApiDocUrl = "http://mp.weixin.qq.com/debug/wxadoc/dev/api/";
+
+const readFile = function(src) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(src, (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(data.toString())
+            }
+        })
+    })
+};
+
+const writeFile = function (dist, content) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(dist, content, (err) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve();
+            }
+        })
+    })
+};
 
 const getPageData = function(url) {
     return new Promise((resolve, reject) => {
@@ -34,201 +58,167 @@ const getPageData = function(url) {
     })
 };
 
-const getApiList = function() {
-    return getPageData(ApiUrl)
+const getApiList = function(url) {
+    return getPageData(url)
         .then(body => {
             const $ = cheerio.load(body);
             let apiList = [];
-
-            $('.markdown-section').find('p').filter((index,item) => {
-                // 接口类别
-                return $(item.next).is('table');
-            }).each((index,item) => {
-                let apis = [];
-                // 分类接口列表
-				if ($(item).text() !== "数据 API 列表：") {
-					$(item.next).find('tbody tr').each((_, el) => {
-						apis.push({
-							name: $(el).find('a').text(),
-							link: $(el).find('a').attr('href'),
-							description: $(el).find('td').last().text()
-						})
-					});
-
-					apiList.push({
-						name: $(item).text(),
-						items: apis
-					})
-				} else {
-					apiList.push({
-						name: $(item).text(),
-						items: [{
-							name: "wx.setStorage",
-							link: "data.html",
-							description: "将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口。"
-						},{
-							name: "wx.setStorageSync",
-							link: "data.html",
-							description: "将 data 存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口。"
-						},{
-							name: "wx.getStorage",
-							link: "data.html",
-							description: "从本地缓存中异步获取指定 key 对应的内容。"
-						},{
-							name: "wx.getStorageSync",
-							link: "data.html",
-							description: "从本地缓存中同步获取指定 key 对应的内容。"
-						},{
-							name: "wx.clearStorage",
-							link: "data.html",
-							description: "清理本地数据缓存。"
-						},{
-							name: "wx.clearStorageSync",
-							link: "data.html",
-							description: "同步清理本地数据缓存"
-
-						}]
-					})
-				}
-            })
+            $('ul.summary > li')
+                .each((_, li) => {
+                    const name = $(li).data('name');
+                    let items = [];
+                    $(li).children('ul.articles').children('li').each((_, item) => {
+                        items.push({
+                            name: $(item).data('name'),
+                            url: `${ApiDocUrl}${$(item).data('path')}`
+                        })
+                    })
+                    apiList.push({
+                        name,
+                        items
+                    })
+                })
 
             return apiList;
-
-        })
-        .catch(err => {
-            console.log(err)
-        })
-}
-
-const getApi = function(api) {
-    return getPageData(`${ApiUrl}${api.link}`)
-        .then(body => {
-			
-            const $ = cheerio.load(body);
-            let params = [];
-            const el = $('.markdown-section').find('h3').filter((_, item) => {
-                return $(item).text().startsWith(api.name);
-            });
-            
-            el.text().replace(/\(([^\)]+)\)/, (str, paramStr) => {
-                paramStr.split(',').forEach((type, index) => {
-                    params[index] = {type, keys: []}
-                    let table = el.nextAll().filter((_,next) => {
-						return $(next).is('table') && _ <= 4;	
-					}).first();
-                    if (table && table.is('table')) {
-                        table.find('tbody tr').each((_, item) => {
-                            const tds = $(item).find('td');
-                            params[index].keys.push({
-                                name: tds.eq(0).text(),
-                                type: tds.eq(1).text(),
-                                required: tds.eq(2).text(),
-                                description: tds.eq(3).text()
-                            })
-                        })
-                    }
-                });
-            });
-
-            return params;
-
         })
 };
 
-getApiList()
+const getApiContent = function (url) {
+    return getPageData(url)
+        .then(body => {
+            const $ = cheerio.load(body);
+            let apis = [];
+            $('section.markdown-section').find('h3')
+                .filter((_, item)=> {
+                    return $(item).text().startsWith('wx');
+                }).each((_, item) => {
+                    let params = [];
+                    $(item).text().replace(/\(([^\)]+)\)/, (str, paramStr) => {
+                        paramStr.split(',').forEach((type, index) => {
+                            params[index] = {type, keys: []}
+                            let table = $(item).nextAll().filter((_,next) => {
+                                return $(next).is('table') && _ <= 4;	
+                            }).first();
+                            if (table && table.is('table')) {
+                                table.find('tbody tr').each((_, item) => {
+                                    const tds = $(item).find('td');
+                                    params[index].keys.push({
+                                        name: tds.eq(0).text(),
+                                        type: tds.eq(1).text(),
+                                        required: tds.eq(2).text(),
+                                        description: tds.eq(3).text()
+                                    })
+                                })
+                            }
+                        });
+                    });
 
-    .then(list => {
-        return Promise.all(list.map(apis => {
-            return Promise.all(apis.items.map(api => {
-                return getApi(api)
-                    .then(detail => {
-                        return Object.assign({}, api, {detail})
-                    }) 
+                apis.push({
+                    url,
+                    name: $(item).text().replace(/\(.*\)$/,''),
+                    description: $(item).next('p').text(),
+                    params
+                });
+            });
+
+            return apis;
+        })
+};
+
+getApiList(ApiDocUrl)
+    .then(apiList => {
+        //apiList.splice(1);
+        return Promise.all(apiList.map(category => {
+            return Promise.all(category.items.map(item => {
+                return getApiContent(item.url)
+                    .then(apis => {
+                        return Object.assign({}, item, {apis})
+                    })
             }))
-            .then(items => {
-                return {
-                    name: apis.name,
-                    items
-                }
+            .then(list => {
+                return Object.assign({}, category, {items: list})
             })
-            
         }))
     })
-    .then(list => {
-        let dts = `
-            declare var wx: {
+    .then(apiList => {
+        let dts = `declare var wx: {`;
 
-        `;
-
-        list.forEach(cat => {
+        apiList.forEach(cat => {
             dts += `
-                // # ${cat.name} #
-            `;
+    // # ${cat.name} # 
+    `;
 
             cat.items.forEach(item => {
-                const funcName = item.name.replace(/^wx\./,'');
-                dts += `
-                /**
-                 * ${item.description}
-                 */
-                ${funcName}(`
-                item.detail.forEach((detail,i) => {
-                    if (detail.type === "OBJECT") {
-                        dts += `obj: {`;
-                        detail.keys.forEach((key,index) => {
+                item.apis.forEach((api) => {
+                    const funcName = api.name.replace(/^wx\./,'');
+                    dts += `
+    /**
+     * ${api.description}
+     */
+    ${funcName}(`
+                    api.params.forEach((param, index) => {
+                        if (param.type === "OBJECT") {
+                            dts += `obj: {`;
+                            param.keys.forEach((key,index) => {
+                                dts += `
+        /**
+         * ${key.description}
+         */
+        ${key.name}${key.required === "是" ? "" : "?"}: `
+                                const types = key.type.split('、');
+                                if (types.length > 1) {
+                                    dts += types.map(t => Types[t.toLowerCase()]).join(' | ')
+                                } else {
+                                    dts += Types[key.type.toLowerCase()]
+                                }
+                                dts += `;`
+                            });
+
                             dts += `
-                            /**
-                             * ${key.description}
-                             */
-                            ${key.name}${key.required === "是" ? "" : "?"}: `
-                            const types = key.type.split('、');
-                            if (types.length > 1) {
-                                dts += types.map(t => Types[t.toLowerCase()]).join(' | ')
-                            } else {
-                                dts += Types[key.type.toLowerCase()]
-                            }
-                            dts += `;`
-                        });
+    }`;
 
-                        dts += `
-                        }`;
+                        } else if (param.type === "CALLBACK") {
+                            dts += "callback: Function";
+                        } else if (param.type === "KEY") {
+                            dts += "key: string";
+                        } else if (param.type === "DATA") {
+                            dts += "data: any";
+                        }
+                        if (api.params.length > 1 && index < api.params.length) {
+                            dts += ", "
+                        }
+                    });
 
-                    } else if (detail.type === "CALLBACK") {
-                       dts += "callback: Function";
-                    } else if (detail.type === "KEY") {
-						dts += "key: string";
-					} else if (detail.type === "DATA") {
-						dts += "data: any";
-					}
-					if (item.detail.length > 1 && i < item.detail.length) {
-						dts += ", "
-					}
-                });
+                    let returnType = "void";
+                    if (funcName === "createContext") {
+                        returnType = "IContext";
+                    } else if (funcName === "createAnimation") {
+                        returnType = "IAnimation";
+                    } else if (funcName === "createAudioContext") {
+                        returnType = "IAudioContext";
+                    } else if (funcName === "createVideoContext") {
+                        returnType = "IVideoContext";
+                    }
+                    dts += `): ${returnType};
+                    `;
+                })
+            });
 
-                dts += `): void;
-                `;
-            })
         });
 
         dts += `
-        }`
+}`
         return dts;
     })
     .then(dts => {
-        return new Promise((resolve, reject) => {
-            fs.writeFile("./wx.d.ts", dts, (err) => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve();
+        return readFile('./definitions.tpl')
+            .then(data => {
+                return writeFile('./wx.d.ts', data + dts);
             })
-        })
     })
     .then(() => {
-        console.log('done');
+        console.log('done')
     })
     .catch(err => {
         console.log(err);
     })
-
-

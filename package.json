@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/cheerio": "^0.17.31",
+    "@types/node": "^6.0.49",
+    "@types/request": "0.0.33",
     "cheerio": "^0.22.0",
     "request": "^2.75.0"
   }

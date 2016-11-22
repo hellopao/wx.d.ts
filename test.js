@@ -6,14 +6,11 @@ App({
 })
 
 var app = getApp();
-
-app.getCurrentPage();
 app.setData({
     a: "1"
 })
 Page({
     onHide: function() {
-
     }
 })
 
@@ -22,6 +19,17 @@ wx.getSystemInfo({
 
     }
 })
+
+getCurrentPages().forEach(page => {})
+
+const video = wx.createVideoContext();
+video.play();
+video.seek(10);
+video.sendDanmu({text: "ss",color: "red"})
+
+const audio = wx.createAudioContext();
+audio.pause();
+audio.seek(11)
 
 const animation = wx.createAnimation({});
 
@@ -38,4 +46,5 @@ wx.getBackgroundAudioPlayerState({
     success: res => {
         console.log(res.currentPosition);
     }
-})
+});
+

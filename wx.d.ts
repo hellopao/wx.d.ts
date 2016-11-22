@@ -1,6 +1,5 @@
 // Type definitions for wx app
 // Definitions by: hellopao <https://github.com/hellopao/wx.d.ts>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 /************************************************
 *                                               *
@@ -238,1020 +237,42 @@ interface IContext {
     setMiterLimit(miterLimit: number): void;
 }
 
-declare var wx: {
-
-
-    // # 网络 API 列表： #
-
+interface IAudioContext {
     /**
-     * 发起网络请求
+     * 播放 
      */
-    request(obj: {
-        /**
-         * 开发者服务器接口地址
-         */
-        url: string;
-        /**
-         * 请求的参数
-         */
-        data?: any | string;
-        /**
-         * 设置请求的 header , header 中不能设置 Referer
-         */
-        header?: any;
-        /**
-         * 默认为 GET，有效值：OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-         */
-        method?: string;
-        /**
-         * 收到开发者服务成功返回的回调函数，res = {data: '开发者服务器返回的内容'}
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
+    play: () => void;	
     /**
-     * 上传文件
+     * 暂停 
      */
-    uploadFile(obj: {
-        /**
-         * 开发者服务器 url
-         */
-        url: string;
-        /**
-         * 要上传文件资源的路径
-         */
-        filePath: string;
-        /**
-         * 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
-         */
-        name: string;
-        /**
-         * HTTP 请求 Header , header 中不能设置 Referer
-         */
-        header?: any;
-        /**
-         * HTTP 请求中其他额外的 form data
-         */
-        formData?: any;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
+    pause: () => void;	
     /**
-     * 下载文件
+     * 跳转到指定位置，单位 s
      */
-    downloadFile(obj: {
-        /**
-         * 下载资源的 url
-         */
-        url: string;
-        /**
-         * 下载资源的类型，用于客户端识别处理，有效值：image/audio/video
-         */
-        type?: string;
-        /**
-         * HTTP 请求 Header
-         */
-        header?: any;
-        /**
-         * 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'}
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    seek: (position: number) => void;	
+}
 
+interface IVideoContext {
     /**
-     * 创建 WebSocket 连接
+     * 播放 
      */
-    connectSocket(obj: {
-        /**
-         * 开发者服务器接口地址，必须是 HTTPS 协议，且域名必须是后台配置的合法域名
-         */
-        url: string;
-        /**
-         * 请求的数据
-         */
-        data?: any;
-        /**
-         * HTTP Header , header 中不能设置 Referer
-         */
-        header?: any;
-        /**
-         * 默认是GET，有效值为： OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-         */
-        method?: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
+    play: () => void;	
     /**
-     * 监听 WebSocket 打开
+     * 暂停 
      */
-    onSocketOpen(callback: (res: any) => void): void;
-
+    pause: () => void;	
     /**
-     * 监听 WebSocket 错误
+     * 跳转到指定位置，单位 s
      */
-    onSocketError(callback: (res: any) => void): void;
-
+    seek: (position: number) => void;
     /**
-     * 发送 WebSocket 消息
+     * 发送弹幕，danmu 包含两个属性 text, color。
      */
-    sendSocketMessage(obj: {
-        /**
-         * 需要发送的内容
-         */
-        data: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 接受 WebSocket 消息
-     */
-    onSocketMessage(callback: (res: {
-		/**
-		 * 服务器返回的消息
-		 */
-        data: string;
-    }) => void): void;
-
-    /**
-     * 关闭 WebSocket 连接
-     */
-    closeSocket(): void;
-
-    /**
-     * 监听 WebSocket 关闭
-     */
-    onSocketClose(callback: (res: any) => void): void;
-
-    // # 媒体 API 列表： #
-
-    /**
-     * 从相册选择图片，或者拍照
-     */
-    chooseImage(obj: {
-        /**
-         * 最多可以选择的图片张数，默认9
-         */
-        count?: number;
-        /**
-         * original 原图，compressed 压缩图，默认二者都有
-         */
-        sizeType?: string[];
-        /**
-         * album 从相册选图，camera 使用相机，默认二者都有
-         */
-        sourceType?: string[];
-        /**
-         * 成功则返回图片的本地文件路径列表 tempFilePaths
-         */
-        success: (res: {
-			/**
-			 * 选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-			 */
-            tempFilePaths: string;
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 预览图片
-     */
-    previewImage(obj: {
-        /**
-         * 当前显示图片的链接，不填则默认为 urls 的第一张
-         */
-        current?: string;
-        /**
-         * 需要预览的图片链接列表
-         */
-        urls: string[];
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 开始录音
-     */
-    startRecord(obj: {
-        /**
-         * 录音成功后调用，返回录音文件的临时文件路径，res = {tempFilePath: '录音文件的临时路径'}
-         */
-        success: (res: {
-			/**
-			 * 录音文件的临时路径片
-			 */
-            tempFilePath: string;
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 结束录音
-     */
-    stopRecord(): void;
-
-    /**
-     * 播放语音
-     */
-    playVoice(obj: {
-        /**
-         * 需要播放的语音文件的文件路径
-         */
-        filePath: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 暂停播放语音
-     */
-    pauseVoice(): void;
-
-    /**
-     * 结束播放语音
-     */
-    stopVoice(): void;
-
-    /**
-     * 获取音乐播放状态
-     */
-    getBackgroundAudioPlayerState(obj: {
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: (res: {
-			/**
-			 * 选定音频的长度（单位：s），只有在当前有音乐播放时返回
-			 */
-            duration: number;
-			/**
-			 * 选定音频的播放位置（单位：s），只有在当前有音乐播放时返回 
-			 */
-            currentPosition: number;
-			/**
-			 * 播放状态（2：没有音乐在播放，1：播放中，0：暂停中）
-			 */
-            status: 0 | 1 | 2;
-			/**
-			 * 音频的下载进度（整数，80 代表 80%），只有在当前有音乐播放时返回
-			 */
-            downloadPercent: number;
-			/**
-			 * 歌曲数据链接，只有在当前有音乐播放时返回
-			 */
-            dataUrl: string;
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 播放音乐
-     */
-    playBackgroundAudio(obj: {
-        /**
-         * 音乐链接
-         */
-        dataUrl: string;
-        /**
-         * 音乐标题
-         */
-        title?: string;
-        /**
-         * 封面URL
-         */
-        coverImgUrl?: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 暂停播放音乐
-     */
-    pauseBackgroundAudio(): void;
-
-    /**
-     * 控制音乐播放进度
-     */
-    seekBackgroundAudio(obj: {
-        /**
-         * 音乐位置，单位：秒
-         */
-        position: number;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 停止播放音乐
-     */
-    stopBackgroundAudio(): void;
-
-    /**
-     * 监听音乐开始播放
-     */
-    onBackgroundAudioPlay(callback: Function): void;
-
-    /**
-     * 监听音乐暂停
-     */
-    onBackgroundAudioPause(callback: Function): void;
-
-    /**
-     * 监听音乐结束
-     */
-    onBackgroundAudioStop(callback: Function): void;
-
-    /**
-     * 从相册选择视频，或者拍摄
-     */
-    chooseVideo(obj: {
-        /**
-         * album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera']
-         */
-        sourceType?: string[];
-        /**
-         * 拍摄视频最长拍摄时间，单位秒。最长支持60秒
-         */
-        maxDuration?: number;
-        /**
-         * 前置或者后置摄像头，默认为前后都有，即：['front', 'back']
-         */
-        camera?: string[];
-        /**
-         * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
-         */
-        success?: (res: {
-			/**
-			 * 选定视频的临时文件路径
-			 */
-            tempFilePath: string;
-			/**
-			 * 选定视频的时间长度
-			 */
-            duration: number;
-			/**
-			 * 选定视频的数据量大小
-			 */
-            size: number;
-			/**
-			 * 返回选定视频的长
-			 */
-            height: number;
-			/**
-			 * 返回选定视频的宽
-			 */
-            width: number;
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 保存文件
-     */
-    saveFile(obj: {
-        /**
-         * 需要保存的文件的临时路径
-         */
-        tempFilePath: string;
-        /**
-         * 返回文件的保存路径，res = {savedFilePath: '文件的保存路径'}
-         */
-        success?: (res: {
-			/**
-			 * 文件的保存路径
-			 */
-            savedFilePath: string;
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    // # 数据 API 列表： #
-
-    /**
-     * 将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口。
-     */
-    setStorage(obj: {
-        /**
-         * 本地缓存中的指定的 key
-         */
-        key: string;
-        /**
-         * 需要存储的内容
-         */
-        data: any;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 将 data 存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口。
-     */
-    setStorageSync(key: string, data: any, ): void;
-
-    /**
-     * 从本地缓存中异步获取指定 key 对应的内容。
-     */
-    getStorage(obj: {
-        /**
-         * 本地缓存中的指定的 key
-         */
-        key: string;
-        /**
-         * 接口调用的回调函数,res = {data: key对应的内容}
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 从本地缓存中同步获取指定 key 对应的内容。
-     */
-    getStorageSync(key: string): void;
-
-    /**
-     * 清理本地数据缓存。
-     */
-    clearStorage(): void;
-
-    /**
-     * 同步清理本地数据缓存
-     */
-    clearStorageSync(): void;
-
-    // # 位置 API 列表： #
-
-    /**
-     * 获取当前位置
-     */
-    getLocation(obj: {
-        /**
-         * 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标
-         */
-        type?: string;
-        /**
-         * 接口调用成功的回调函数，返回内容详见返回参数说明。
-         */
-        success: (res: {
-            /**
-             * 纬度，浮点数，范围为-90~90，负数表示南纬
-             */
-            latitude: number;	
-            /**
-             * 经度，浮点数，范围为-180~180，负数表示西经
-             */
-            longitude: number;	
-            /**
-             * 速度，浮点数，单位m/s
-             */
-            speed: number;	
-            /**
-             * 位置的精确度
-             */
-            accuracy: number;
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 打开内置地图
-     */
-    openLocation(obj: {
-        /**
-         * 纬度，范围为-90~90，负数表示南纬
-         */
-        latitude: number;
-        /**
-         * 经度，范围为-180~180，负数表示西经
-         */
-        longitude: number;
-        /**
-         * 缩放比例，范围1~28，默认为28
-         */
-        scale?: number;
-        /**
-         * 位置名
-         */
-        name?: string;
-        /**
-         * 地址的详细说明
-         */
-        address?: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    // # 设备 API 列表： #
-
-    /**
-     * 获取网络类型
-     */
-    getNetworkType(obj: {
-        /**
-         * 接口调用成功，返回网络类型 networkType
-         */
-        success: (res: {
-            /**
-             * 网络类型 
-             */
-            networkType: "2g"| "3g"| "4g"| "wifi";
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 获取系统信息
-     */
-    getSystemInfo(obj: {
-        /**
-         * 接口调用成功的回调
-         */
-        success: (res: {
-            /**
-             * 手机型号
-             */
-            model: string;	
-            /**
-             * 设备像素比
-             */
-            pixelRatio: number;	
-            /**
-             * 窗口宽度
-             */
-            windowWidth: number;	
-            /**
-             * 窗口高度
-             */
-            windowHeight: number;	
-            /**
-             * 微信设置的语言
-             */
-            language: string;	
-            /**
-             * 微信版本号
-             */
-            version: string;
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 监听重力感应数据
-     */
-    onAccelerometerChange(callback: (
-        res: {
-            /**
-             * X轴
-             */
-            x: number;
-            /**
-             * Y轴
-             */
-            y: number;
-            /**
-             * Z轴
-             */
-            z: number;
-        }
-    ) => void): void;
-
-    /**
-     * 监听罗盘数据
-     */
-    onCompassChange(callback: (res: {
-        /**
-         * 面对的方向度数
-         */
-        direction: number;
-    }) =>void): void;
-
-    // # 界面 API 列表： #
-
-    /**
-     * 设置当前页面标题
-     */
-    setNavigationBarTitle(obj: {
-        /**
-         * 页面标题
-         */
-        title?: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 显示导航条加载动画
-     */
-    showNavigationBarLoading(): void;
-
-    /**
-     * 隐藏导航条加载动画
-     */
-    hideNavigationBarLoading(): void;
-
-    /**
-     * 新窗口打开页面
-     */
-    navigateTo(obj: {
-        /**
-         * 需要跳转的应用内页面的路径
-         */
-        url: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 原窗口打开页面
-     */
-    redirectTo(obj: {
-        /**
-         * 需要跳转的应用内页面的路径
-         */
-        url: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 退回上一个页面
-     */
-    navigateBack(): void;
-
-    /**
-     * 动画
-     */
-    createAnimation(obj: {
-        /**
-         * 动画持续时间，单位ms，默认值 400
-         */
-        duration?: number;
-        /**
-         * 定义动画的效果，默认值"linear"，有效值："linear","ease","ease-in","ease-in-out","ease-out","step-start","step-end"
-         */
-        timingFunction?: string;
-        /**
-         * 动画持续时间，单位 ms，默认值 0
-         */
-        delay?: number;
-        /**
-         * 设置transform-origin，默认为"50% 50% 0"
-         */
-        transformOrigin?: string;
-    }): IAnimation;
-
-    /**
-     * 创建绘图上下文
-     */
-    createContext(): IContext;
-
-    /**
-     * 绘图
-     */
-    drawCanvas(obj: {
-        /**
-         * 画布标识，传入 <canvas/> 的 cavas-id
-         */
-        canvasId: string;
-        /**
-         * 绘图动作数组，由 wx.createContext 创建的 context，调用 getActions 方法导出绘图动作数组。
-         */
-        actions: Array<any>;
-    }): void;
-
-    /**
-     * 隐藏键盘
-     */
-    hideKeyboard(): void;
-
-    /**
-     * 停止下拉刷新动画
-     */
-    stopPullDownRefresh(): void;
-
-    // # 开放接口： #
-
-    /**
-     * 登录
-     */
-    login(obj: {
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: (res: { code?: string; errMsg?: string }) => void;    
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function
-    }): void;
-
-    /**
-     * 获取用户信息
-     */
-    getUserInfo(obj: {
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: (res: {
-            /**
-             * 用户信息对象，不包含 openid 等敏感信息
-             */
-            userInfo: {
-                /**
-                 * 昵称
-                 */
-                nickName: string;
-                /**
-                 * 性别， 0：未知、1：男、2：女 
-                 */
-                gender: 0 | 1 | 2;
-                /**
-                 * 城市
-                 */
-                city: string;
-                /**
-                 * 省份
-                 */
-                province: string;
-                /**
-                 * 国家
-                 */
-                country: string;
-                /**
-                 * 头像地址
-                 */
-                avatarUrl: string;
-            };
-            /**
-             * 不包括敏感信息的原始数据字符串，用于计算签名。
-             */
-            rawData: string; 
-            /**
-             * 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息。
-             */
-            signature: string; 
-            /**
-             * 包括敏感数据在内的完整用户信息的加密数据，详细见加密数据解密算法
-             */
-            encryptData: string;  
-        }) => void;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
-    /**
-     * 发起微信支付
-     */
-    requestPayment(obj: {
-        /**
-         * 时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间
-         */
-        timeStamp: number;
-        /**
-         * 随机字符串，长度为32个字符以下。
-         */
-        nonceStr: string;
-        /**
-         * 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
-         */
-        package: string;
-        /**
-         * 签名算法，暂支持 MD5
-         */
-        signType: string;
-        /**
-         * 签名,具体签名方案参见微信公众号支付帮助文档;
-         */
-        paySign: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-
+    sendDanmu: (danmu: {text: string; color: string;}) => void;
 }
 
 interface Application {
     setData: (obj: any) => void;
-    getCurrentPage: () => Page;
 }
 
 interface AppConstructor {
@@ -1269,11 +290,15 @@ interface AppConstructor {
          * 生命周期函数--监听小程序隐藏
          */
         onHide?: () => void;
+
+        [key: string]: any;
     }): Application;
 }
 
 declare var App: AppConstructor;
 declare function getApp(): Application;
+
+declare function getCurrentPages(): Page[];
 
 interface Page {
     setData: (obj: any) => void;
@@ -1310,7 +335,1562 @@ interface PageConstructor {
          * 页面相关事件处理函数--监听用户下拉动作
          */
         onPullDownRefreash?: () => void;
+        /**
+         * 页面上拉触底事件的处理函数
+         */
+        onReachBottom?: () => void;
+
+        [key: string]: any;
     }): Page;
 }
 
 declare var Page: PageConstructor;
+
+declare var wx: {
+    // # 网络 # 
+    
+    /**
+     * wx.request发起的是 HTTPS 请求。一个微信小程序，同时只能有5个网络请求连接。
+     */
+    request(obj: {
+        /**
+         * 开发者服务器接口地址
+         */
+        url: string;
+        /**
+         * 请求的参数
+         */
+        data?: any | string;
+        /**
+         * 设置请求的 header , header 中不能设置 Referer
+         */
+        header?: any;
+        /**
+         * 默认为 GET，有效值：OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+         */
+        method?: string;
+        /**
+         * 收到开发者服务成功返回的回调函数，res = {data: '开发者服务器返回的内容'}
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 将本地资源上传到开发者服务器。如页面通过 wx.chooseImage 等接口获取到一个本地资源的临时文件路径后，可通过此接口将本地资源上传到指定服务器。客户端发起一个 HTTPS POST 请求，其中 content-type 为 multipart/form-data 。
+     */
+    uploadFile(obj: {
+        /**
+         * 开发者服务器 url
+         */
+        url: string;
+        /**
+         * 要上传文件资源的路径
+         */
+        filePath: string;
+        /**
+         * 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容
+         */
+        name: string;
+        /**
+         * HTTP 请求 Header , header 中不能设置 Referer
+         */
+        header?: any;
+        /**
+         * HTTP 请求中其他额外的 form data
+         */
+        formData?: any;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 下载文件资源到本地。客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径。
+     */
+    downloadFile(obj: {
+        /**
+         * 下载资源的 url
+         */
+        url: string;
+        /**
+         * HTTP 请求 Header
+         */
+        header?: any;
+        /**
+         * 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'}
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 创建一个 WebSocket 连接；一个微信小程序同时只能有一个 WebSocket 连接，如果当前已存在一个 WebSocket 连接，会自动关闭该连接，并重新创建一个 WebSocket 连接。
+     */
+    connectSocket(obj: {
+        /**
+         * 开发者服务器接口地址，必须是 wss 协议，且域名必须是后台配置的合法域名
+         */
+        url: string;
+        /**
+         * 请求的数据
+         */
+        data?: any;
+        /**
+         * HTTP Header , header 中不能设置 Referer
+         */
+        header?: any;
+        /**
+         * 默认是GET，有效值为： OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+         */
+        method?: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 监听WebSocket连接打开事件。
+     */
+    onSocketOpen(callback: Function): void;
+                    
+    /**
+     * 监听WebSocket错误。
+     */
+    onSocketError(callback: Function): void;
+                    
+    /**
+     * 通过 WebSocket 连接发送数据，需要先 wx.connectSocket，并在 wx.onSocketOpen 回调之后才能发送。
+     */
+    sendSocketMessage(obj: {
+        /**
+         * 需要发送的内容
+         */
+        data: undefined;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 监听WebSocket接受到服务器的消息事件。
+     */
+    onSocketMessage(callback: Function): void;
+                    
+    /**
+     * 关闭WebSocket连接。
+     */
+    closeSocket(): void;
+                    
+    /**
+     * 监听WebSocket关闭。
+     */
+    onSocketClose(callback: Function): void;
+                    
+    // # 媒体 # 
+    
+    /**
+     * 从本地相册选择图片或使用相机拍照。
+     */
+    chooseImage(obj: {
+        /**
+         * 最多可以选择的图片张数，默认9
+         */
+        count?: number;
+        /**
+         * original 原图，compressed 压缩图，默认二者都有
+         */
+        sizeType?: string[];
+        /**
+         * album 从相册选图，camera 使用相机，默认二者都有
+         */
+        sourceType?: string[];
+        /**
+         * 成功则返回图片的本地文件路径列表 tempFilePaths
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 预览图片。
+     */
+    previewImage(obj: {
+        /**
+         * 当前显示图片的链接，不填则默认为 urls 的第一张
+         */
+        current?: string;
+        /**
+         * 需要预览的图片链接列表
+         */
+        urls: string[];
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取图片信息
+     */
+    getImageInfo(obj: {
+        /**
+         * 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径
+         */
+        src: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 开始录音。当主动调用wx.stopRecord，或者录音超过1分钟时自动结束录音，返回录音文件的临时文件路径。
+     */
+    startRecord(obj: {
+        /**
+         * 录音成功后调用，返回录音文件的临时文件路径，res = {tempFilePath: '录音文件的临时路径'}
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * ​    主动调用停止录音。
+     */
+    stopRecord(): void;
+                    
+    /**
+     * 开始播放语音，同时只允许一个语音文件正在播放，如果前一个语音文件还没播放完，将中断前一个语音播放。
+     */
+    playVoice(obj: {
+        /**
+         * 需要播放的语音文件的文件路径
+         */
+        filePath: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 暂停正在播放的语音。再次调用wx.playVoice播放同一个文件时，会从暂停处开始播放。如果想从头开始播放，需要先调用 wx.stopVoice。
+     */
+    pauseVoice(): void;
+                    
+    /**
+     * 结束播放语音。
+     */
+    stopVoice(): void;
+                    
+    /**
+     * 获取音乐播放状态。
+     */
+    getBackgroundAudioPlayerState(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 播放音乐，同时只能有一首音乐正在播放。
+     */
+    playBackgroundAudio(obj: {
+        /**
+         * 音乐链接
+         */
+        dataUrl: string;
+        /**
+         * 音乐标题
+         */
+        title?: string;
+        /**
+         * 封面URL
+         */
+        coverImgUrl?: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 暂停播放音乐。
+     */
+    pauseBackgroundAudio(): void;
+                    
+    /**
+     * 控制音乐播放进度。
+     */
+    seekBackgroundAudio(obj: {
+        /**
+         * 音乐位置，单位：秒
+         */
+        position: number;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 停止播放音乐。
+     */
+    stopBackgroundAudio(): void;
+                    
+    /**
+     * 监听音乐播放。
+     */
+    onBackgroundAudioPlay(callback: Function): void;
+                    
+    /**
+     * 监听音乐暂停。
+     */
+    onBackgroundAudioPause(callback: Function): void;
+                    
+    /**
+     * 监听音乐停止。
+     */
+    onBackgroundAudioStop(callback: Function): void;
+                    
+    /**
+     * 保存文件到本地。
+     */
+    saveFile(obj: {
+        /**
+         * 需要保存的文件的临时路径
+         */
+        tempFilePath: string;
+        /**
+         * 返回文件的保存路径，res = {savedFilePath: '文件的保存路径'}
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取本地已保存的文件列表
+     */
+    getSavedFileList(obj: {
+        /**
+         * 接口调用成功的回调函数，返回结果见success返回参数说明
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取本地文件的文件信息
+     */
+    getSavedFileInfo(obj: {
+        /**
+         * 文件路径
+         */
+        filePath: string;
+        /**
+         * 接口调用成功的回调函数，返回结果见success返回参数说明
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 删除本地存储的文件
+     */
+    removeSavedFile(obj: {
+        /**
+         * 需要删除的文件路径
+         */
+        filePath: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 新开页面打开文档，支持格式：doc, xls, ppt, pdf, docx, xlsx, pptx
+     */
+    openDocument(obj: {
+        /**
+         * 文件路径，可通过 downFile 获得
+         */
+        filePath: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
+     */
+    chooseVideo(obj: {
+        /**
+         * album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera']
+         */
+        sourceType?: string[];
+        /**
+         * 拍摄视频最长拍摄时间，单位秒。最长支持60秒
+         */
+        maxDuration?: number;
+        /**
+         * 前置或者后置摄像头，默认为前后都有，即：['front', 'back']
+         */
+        camera?: string[];
+        /**
+         * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 创建并返回 audio 上下文 audioContext 对象
+     */
+    createAudioContext(): IAudioContext;
+                    
+    /**
+     * 创建并返回 video 上下文 videoContext 对象
+     */
+    createVideoContext(): IVideoContext;
+                    
+    // # 数据 # 
+    
+    /**
+     * 将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口。
+     */
+    setStorage(obj: {
+        /**
+         * 本地缓存中的指定的 key
+         */
+        key: string;
+        /**
+         * 需要存储的内容
+         */
+        data: any;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 将 data 存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口。
+     */
+    setStorageSync(key: string, data: any, ): void;
+                    
+    /**
+     * 从本地缓存中异步获取指定 key 对应的内容。
+     */
+    getStorage(obj: {
+        /**
+         * 本地缓存中的指定的 key
+         */
+        key: string;
+        /**
+         * 接口调用的回调函数,res = {data: key对应的内容}
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 从本地缓存中同步获取指定 key 对应的内容。
+     */
+    getStorageSync(key: string): void;
+                    
+    /**
+     * 异步获取当前storage的相关信息
+     */
+    getStorageInfo(obj: {
+        /**
+         * 接口调用的回调函数，详见返回参数说明
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 同步获取当前storage的相关信息
+     */
+    getStorageInfoSync(): void;
+                    
+    /**
+     * 从本地缓存中异步移除指定 key 。
+     */
+    removeStorage(obj: {
+        /**
+         * 本地缓存中的指定的 key
+         */
+        key: string;
+        /**
+         * 接口调用的回调函数
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 从本地缓存中同步移除指定 key 。
+     */
+    removeStorageSync(key: string): void;
+                    
+    /**
+     * 清理本地数据缓存。
+     */
+    clearStorage(): void;
+                    
+    /**
+     * 同步清理本地数据缓存
+     */
+    clearStorageSync(): void;
+                    
+    // # 位置 # 
+    
+    /**
+     * 获取当前的地理位置、速度。
+     */
+    getLocation(obj: {
+        /**
+         * 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标
+         */
+        type?: string;
+        /**
+         * 接口调用成功的回调函数，返回内容详见返回参数说明。
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 打开地图选择位置
+     */
+    chooseLocation(obj: {
+        /**
+         * 接口调用成功的回调函数，返回内容详见返回参数说明。
+         */
+        success: Function;
+        /**
+         * 用户取消时调用
+         */
+        cancel?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * ​    使用微信内置地图查看位置
+     */
+    openLocation(obj: {
+        /**
+         * 纬度，范围为-90~90，负数表示南纬
+         */
+        latitude: number;
+        /**
+         * 经度，范围为-180~180，负数表示西经
+         */
+        longitude: number;
+        /**
+         * 缩放比例，范围1~28，默认为28
+         */
+        scale?: number;
+        /**
+         * 位置名
+         */
+        name?: string;
+        /**
+         * 地址的详细说明
+         */
+        address?: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取当前的地理位置、速度。
+     */
+    getLocation(obj: {
+        /**
+         * 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标
+         */
+        type?: string;
+        /**
+         * 接口调用成功的回调函数，返回内容详见返回参数说明。
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 打开地图选择位置
+     */
+    chooseLocation(obj: {
+        /**
+         * 接口调用成功的回调函数，返回内容详见返回参数说明。
+         */
+        success: Function;
+        /**
+         * 用户取消时调用
+         */
+        cancel?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * ​    使用微信内置地图查看位置
+     */
+    openLocation(obj: {
+        /**
+         * 纬度，范围为-90~90，负数表示南纬
+         */
+        latitude: number;
+        /**
+         * 经度，范围为-180~180，负数表示西经
+         */
+        longitude: number;
+        /**
+         * 缩放比例，范围1~28，默认为28
+         */
+        scale?: number;
+        /**
+         * 位置名
+         */
+        name?: string;
+        /**
+         * 地址的详细说明
+         */
+        address?: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    // # 设备 # 
+    
+    /**
+     * 获取网络类型。
+     */
+    getNetworkType(obj: {
+        /**
+         * 接口调用成功，返回网络类型 networkType
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息。
+     */
+    getSystemInfo(obj: {
+        /**
+         * 接口调用成功的回调
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息同步接口
+     */
+    getSystemInfoSync(): void;
+                    
+    /**
+     * 监听重力感应数据，频率：5次/秒
+     */
+    onAccelerometerChange(callback: Function): void;
+                    
+    /**
+     * 监听罗盘数据，频率：5次/秒
+     */
+    onCompassChange(callback: Function): void;
+                    
+    /**
+     * OBJECT参数说明：
+     */
+    makePhoneCall(obj: {
+        /**
+         * 需要拨打的电话号码
+         */
+        phoneNumber: string;
+        /**
+         * 接口调用成功的回调
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取网络类型。
+     */
+    getNetworkType(obj: {
+        /**
+         * 接口调用成功，返回网络类型 networkType
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息。
+     */
+    getSystemInfo(obj: {
+        /**
+         * 接口调用成功的回调
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息同步接口
+     */
+    getSystemInfoSync(): void;
+                    
+    /**
+     * 监听重力感应数据，频率：5次/秒
+     */
+    onAccelerometerChange(callback: Function): void;
+                    
+    /**
+     * 监听罗盘数据，频率：5次/秒
+     */
+    onCompassChange(callback: Function): void;
+                    
+    /**
+     * OBJECT参数说明：
+     */
+    makePhoneCall(obj: {
+        /**
+         * 需要拨打的电话号码
+         */
+        phoneNumber: string;
+        /**
+         * 接口调用成功的回调
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取网络类型。
+     */
+    getNetworkType(obj: {
+        /**
+         * 接口调用成功，返回网络类型 networkType
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息。
+     */
+    getSystemInfo(obj: {
+        /**
+         * 接口调用成功的回调
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息同步接口
+     */
+    getSystemInfoSync(): void;
+                    
+    /**
+     * 监听重力感应数据，频率：5次/秒
+     */
+    onAccelerometerChange(callback: Function): void;
+                    
+    /**
+     * 监听罗盘数据，频率：5次/秒
+     */
+    onCompassChange(callback: Function): void;
+                    
+    /**
+     * OBJECT参数说明：
+     */
+    makePhoneCall(obj: {
+        /**
+         * 需要拨打的电话号码
+         */
+        phoneNumber: string;
+        /**
+         * 接口调用成功的回调
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取网络类型。
+     */
+    getNetworkType(obj: {
+        /**
+         * 接口调用成功，返回网络类型 networkType
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息。
+     */
+    getSystemInfo(obj: {
+        /**
+         * 接口调用成功的回调
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息同步接口
+     */
+    getSystemInfoSync(): void;
+                    
+    /**
+     * 监听重力感应数据，频率：5次/秒
+     */
+    onAccelerometerChange(callback: Function): void;
+                    
+    /**
+     * 监听罗盘数据，频率：5次/秒
+     */
+    onCompassChange(callback: Function): void;
+                    
+    /**
+     * OBJECT参数说明：
+     */
+    makePhoneCall(obj: {
+        /**
+         * 需要拨打的电话号码
+         */
+        phoneNumber: string;
+        /**
+         * 接口调用成功的回调
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取网络类型。
+     */
+    getNetworkType(obj: {
+        /**
+         * 接口调用成功，返回网络类型 networkType
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息。
+     */
+    getSystemInfo(obj: {
+        /**
+         * 接口调用成功的回调
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取系统信息同步接口
+     */
+    getSystemInfoSync(): void;
+                    
+    /**
+     * 监听重力感应数据，频率：5次/秒
+     */
+    onAccelerometerChange(callback: Function): void;
+                    
+    /**
+     * 监听罗盘数据，频率：5次/秒
+     */
+    onCompassChange(callback: Function): void;
+                    
+    /**
+     * OBJECT参数说明：
+     */
+    makePhoneCall(obj: {
+        /**
+         * 需要拨打的电话号码
+         */
+        phoneNumber: string;
+        /**
+         * 接口调用成功的回调
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    // # 界面 # 
+    
+    /**
+     * 显示消息提示框
+     */
+    showToast(obj: {
+        /**
+         * 提示的内容
+         */
+        title: string;
+        /**
+         * 图标，只支持"success"、"loading"
+         */
+        icon?: string;
+        /**
+         * 提示的延迟时间，单位毫秒，默认：1500, 最大为10000
+         */
+        duration?: number;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 隐藏消息提示框
+     */
+    hideToast(): void;
+                    
+    /**
+     * ​显示模态弹窗
+     */
+    showModal(obj: {
+        /**
+         * 提示的标题
+         */
+        title: string;
+        /**
+         * 提示的内容
+         */
+        content: string;
+        /**
+         * 是否显示取消按钮，默认为 true
+         */
+        showCancel?: boolean;
+        /**
+         * 取消按钮的文字，默认为"取消"，最多 4 个字符
+         */
+        cancelText?: string;
+        /**
+         * 取消按钮的文字颜色，默认为"#000000"
+         */
+        cancelColor?: undefined;
+        /**
+         * 确定按钮的文字，默认为"确定"，最多 4 个字符
+         */
+        confirmText?: string;
+        /**
+         * 确定按钮的文字颜色，默认为"#3CC51F"
+         */
+        confirmColor?: undefined;
+        /**
+         * 接口调用成功的回调函数，返回res.confirm为true时，表示用户点击确定按钮
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * ​显示操作菜单
+     */
+    showActionSheet(obj: {
+        /**
+         * 按钮的文字数组，数组长度最大为6个
+         */
+        itemList: undefined;
+        /**
+         * 按钮的文字颜色，默认为"#000000"
+         */
+        itemColor?: undefined;
+        /**
+         * 接口调用成功的回调函数，详见返回参数说明
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 动态设置当前页面的标题。
+     */
+    setNavigationBarTitle(obj: {
+        /**
+         * 页面标题
+         */
+        title: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 在当前页面显示导航条加载动画。
+     */
+    showNavigationBarLoading(): void;
+                    
+    /**
+     * 隐藏导航条加载动画。
+     */
+    hideNavigationBarLoading(): void;
+                    
+    /**
+     * 保留当前页面，跳转到应用内的某个页面，使用wx.navigateBack可以返回到原页面。
+     */
+    navigateTo(obj: {
+        /**
+         * 需要跳转的应用内页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'
+         */
+        url: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 关闭当前页面，跳转到应用内的某个页面。
+     */
+    redirectTo(obj: {
+        /**
+         * 需要跳转的应用内页面的路径
+         */
+        url: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 关闭当前页面，返回上一页面或多级页面。可通过 getCurrentPages()) 获取当前的页面栈，决定需要返回几层。
+     */
+    navigateBack(obj: {
+        /**
+         * 返回的页面数，如果 delta 大于现有页面数，则返回到首页。
+         */
+        delta?: number;
+    }): void;
+                    
+    /**
+     * 创建一个动画实例animation。调用实例的方法来描述动画。最后通过动画实例的export方法导出动画数据传递给组件的animation属性。
+     */
+    createAnimation(obj: {
+        /**
+         * 动画持续时间，单位ms，默认值 400
+         */
+        duration?: number;
+        /**
+         * 定义动画的效果，默认值"linear"，有效值："linear","ease","ease-in","ease-in-out","ease-out","step-start","step-end"
+         */
+        timingFunction?: string;
+        /**
+         * 动画延迟时间，单位 ms，默认值 0
+         */
+        delay?: number;
+        /**
+         * 设置transform-origin，默认为"50% 50% 0"
+         */
+        transformOrigin?: string;
+    }): IAnimation;
+                    
+    /**
+     * 创建并返回绘图上下文context对象。
+     */
+    createContext(): IContext;
+                    
+    /**
+     * OBJECT参数说明：
+     */
+    drawCanvas(obj: {
+        /**
+         * 画布标识，传入 <canvas/> 的 cavas-id
+         */
+        canvasId: string;
+        /**
+         * 绘图动作数组，由 wx.createContext 创建的 context，调用 getActions 方法导出绘图动作数组。
+         */
+        actions: Array<any>;
+        /**
+         * 本次绘制是否接着上一次绘制，即reserve参数为false，则在本次调用drawCanvas绘制之前native层应先清空画布再继续绘制；若reserver参数为true，则保留当前画布上的内容，本次调用drawCanvas绘制的内容覆盖在上面，默认 false
+         */
+        reserve?: boolean;
+    }): void;
+                    
+    /**
+     * 把当前画布的内容导出生成图片，并返回文件路径
+     */
+    canvasToTempFilePath(obj: {
+        /**
+         * 画布标识，传入 <canvas/> 的 cavas-id
+         */
+        canvasId: string;
+    }): void;
+                    
+    /**
+     * 收起键盘。
+     */
+    hideKeyboard(): void;
+                    
+    /**
+     * 停止当前页面下拉刷新。详见页面相关事件处理函数。
+     */
+    stopPullDownRefresh(): void;
+                    
+    // # 开放接口 # 
+    
+    /**
+     * 调用接口获取登录凭证（code）进而换取用户登录态信息，包括用户的唯一标识（openid） 及本次登录的 会话密钥（session_key）。用户数据的加解密通讯需要依赖会话密钥完成。
+     */
+    login(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 检查登陆态是否过期
+     */
+    checkSession(obj: {
+        /**
+         * 接口调用成功的回调函数，登陆态未过期
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数，登陆态已过期
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 发起微信支付。
+     */
+    requestPayment(obj: {
+        /**
+         * 时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间
+         */
+        timeStamp: number;
+        /**
+         * 随机字符串，长度为32个字符以下。
+         */
+        nonceStr: string;
+        /**
+         * 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
+         */
+        package: string;
+        /**
+         * 签名算法，暂支持 MD5
+         */
+        signType: string;
+        /**
+         * 签名,具体签名方案参见微信公众号支付帮助文档;
+         */
+        paySign: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+}
