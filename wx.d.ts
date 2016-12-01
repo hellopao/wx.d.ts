@@ -1862,7 +1862,7 @@ declare var wx: {
         /**
          * 时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间
          */
-        timeStamp: number;
+        timeStamp: string;
         /**
          * 随机字符串，长度为32个字符以下。
          */
