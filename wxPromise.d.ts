@@ -369,19 +369,7 @@ declare var wx: {
          * 默认为 GET，有效值：OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
          */
         method?: string;
-        /**
-         * 收到开发者服务成功返回的回调函数，res = {data: '开发者服务器返回的内容'}
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 将本地资源上传到开发者服务器。如页面通过 wx.chooseImage 等接口获取到一个本地资源的临时文件路径后，可通过此接口将本地资源上传到指定服务器。客户端发起一个 HTTPS POST 请求，其中 content-type 为 multipart/form-data 。
@@ -407,19 +395,7 @@ declare var wx: {
          * HTTP 请求中其他额外的 form data
          */
         formData?: any;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 下载文件资源到本地。客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径。
@@ -433,19 +409,7 @@ declare var wx: {
          * HTTP 请求 Header
          */
         header?: any;
-        /**
-         * 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'}
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 创建一个 WebSocket 连接；一个微信小程序同时只能有一个 WebSocket 连接，如果当前已存在一个 WebSocket 连接，会自动关闭该连接，并重新创建一个 WebSocket 连接。
@@ -467,19 +431,7 @@ declare var wx: {
          * 默认是GET，有效值为： OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
          */
         method?: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 监听WebSocket连接打开事件。
@@ -499,19 +451,7 @@ declare var wx: {
          * 需要发送的内容
          */
         data: undefined;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 监听WebSocket接受到服务器的消息事件。
@@ -546,19 +486,7 @@ declare var wx: {
          * album 从相册选图，camera 使用相机，默认二者都有
          */
         sourceType?: string[];
-        /**
-         * 成功则返回图片的本地文件路径列表 tempFilePaths
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 预览图片。
@@ -572,19 +500,7 @@ declare var wx: {
          * 需要预览的图片链接列表
          */
         urls: string[];
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 获取图片信息
@@ -594,37 +510,12 @@ declare var wx: {
          * 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径
          */
         src: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 开始录音。当主动调用wx.stopRecord，或者录音超过1分钟时自动结束录音，返回录音文件的临时文件路径。
      */
-    startRecord(obj: {
-        /**
-         * 录音成功后调用，返回录音文件的临时文件路径，res = {tempFilePath: '录音文件的临时路径'}
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    startRecord(): Promise<any>;
                     
     /**
      * ​    主动调用停止录音。
@@ -639,19 +530,7 @@ declare var wx: {
          * 需要播放的语音文件的文件路径
          */
         filePath: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 暂停正在播放的语音。再次调用wx.playVoice播放同一个文件时，会从暂停处开始播放。如果想从头开始播放，需要先调用 wx.stopVoice。
@@ -666,20 +545,7 @@ declare var wx: {
     /**
      * 获取音乐播放状态。
      */
-    getBackgroundAudioPlayerState(obj: {
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    getBackgroundAudioPlayerState(): Promise<any>;
                     
     /**
      * 播放音乐，同时只能有一首音乐正在播放。
@@ -697,19 +563,7 @@ declare var wx: {
          * 封面URL
          */
         coverImgUrl?: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 暂停播放音乐。
@@ -724,19 +578,7 @@ declare var wx: {
          * 音乐位置，单位：秒
          */
         position: number;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 停止播放音乐。
@@ -766,37 +608,12 @@ declare var wx: {
          * 需要保存的文件的临时路径
          */
         tempFilePath: string;
-        /**
-         * 返回文件的保存路径，res = {savedFilePath: '文件的保存路径'}
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 获取本地已保存的文件列表
      */
-    getSavedFileList(obj: {
-        /**
-         * 接口调用成功的回调函数，返回结果见success返回参数说明
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    getSavedFileList(): Promise<any>;
                     
     /**
      * 获取本地文件的文件信息
@@ -806,19 +623,7 @@ declare var wx: {
          * 文件路径
          */
         filePath: string;
-        /**
-         * 接口调用成功的回调函数，返回结果见success返回参数说明
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 删除本地存储的文件
@@ -828,19 +633,7 @@ declare var wx: {
          * 需要删除的文件路径
          */
         filePath: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 新开页面打开文档，支持格式：doc, xls, ppt, pdf, docx, xlsx, pptx
@@ -850,19 +643,7 @@ declare var wx: {
          * 文件路径，可通过 downFile 获得
          */
         filePath: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
@@ -880,19 +661,7 @@ declare var wx: {
          * 前置或者后置摄像头，默认为前后都有，即：['front', 'back']
          */
         camera?: string[];
-        /**
-         * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 创建并返回 audio 上下文 audioContext 对象
@@ -918,19 +687,7 @@ declare var wx: {
          * 需要存储的内容
          */
         data: any;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 将 data 存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口。
@@ -945,19 +702,7 @@ declare var wx: {
          * 本地缓存中的指定的 key
          */
         key: string;
-        /**
-         * 接口调用的回调函数,res = {data: key对应的内容}
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 从本地缓存中同步获取指定 key 对应的内容。
@@ -967,20 +712,7 @@ declare var wx: {
     /**
      * 异步获取当前storage的相关信息
      */
-    getStorageInfo(obj: {
-        /**
-         * 接口调用的回调函数，详见返回参数说明
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    getStorageInfo(): Promise<any>;
                     
     /**
      * 同步获取当前storage的相关信息
@@ -995,19 +727,7 @@ declare var wx: {
          * 本地缓存中的指定的 key
          */
         key: string;
-        /**
-         * 接口调用的回调函数
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 从本地缓存中同步移除指定 key 。
@@ -1034,41 +754,17 @@ declare var wx: {
          * 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于wx.openLocation的坐标
          */
         type?: string;
-        /**
-         * 接口调用成功的回调函数，返回内容详见返回参数说明。
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 打开地图选择位置
      */
     chooseLocation(obj: {
         /**
-         * 接口调用成功的回调函数，返回内容详见返回参数说明。
-         */
-        success: Function;
-        /**
          * 用户取消时调用
          */
         cancel?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * ​    使用微信内置地图查看位置
@@ -1094,57 +790,19 @@ declare var wx: {
          * 地址的详细说明
          */
         address?: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     // # 设备 # 
     
     /**
      * 获取网络类型。
      */
-    getNetworkType(obj: {
-        /**
-         * 接口调用成功，返回网络类型 networkType
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    getNetworkType(): Promise<any>;
                     
     /**
      * 获取系统信息。
      */
-    getSystemInfo(obj: {
-        /**
-         * 接口调用成功的回调
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    getSystemInfo(): Promise<any>;
                     
     /**
      * 获取系统信息同步接口
@@ -1166,19 +824,7 @@ declare var wx: {
          * 需要拨打的电话号码
          */
         phoneNumber: string;
-        /**
-         * 接口调用成功的回调
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     // # 界面 # 
     
@@ -1198,19 +844,7 @@ declare var wx: {
          * 提示的延迟时间，单位毫秒，默认：1500, 最大为10000
          */
         duration?: number;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 隐藏消息提示框
@@ -1249,19 +883,7 @@ declare var wx: {
          * 确定按钮的文字颜色，默认为"#3CC51F"
          */
         confirmColor?: undefined;
-        /**
-         * 接口调用成功的回调函数，返回res.confirm为true时，表示用户点击确定按钮
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * ​显示操作菜单
@@ -1275,19 +897,7 @@ declare var wx: {
          * 按钮的文字颜色，默认为"#000000"
          */
         itemColor?: undefined;
-        /**
-         * 接口调用成功的回调函数，详见返回参数说明
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 动态设置当前页面的标题。
@@ -1297,19 +907,7 @@ declare var wx: {
          * 页面标题
          */
         title: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 在当前页面显示导航条加载动画。
@@ -1329,19 +927,7 @@ declare var wx: {
          * 需要跳转的应用内页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'
          */
         url: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 关闭当前页面，跳转到应用内的某个页面。
@@ -1351,19 +937,7 @@ declare var wx: {
          * 需要跳转的应用内页面的路径
          */
         url: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 关闭当前页面，返回上一页面或多级页面。可通过 getCurrentPages()) 获取当前的页面栈，决定需要返回几层。
@@ -1373,7 +947,7 @@ declare var wx: {
          * 返回的页面数，如果 delta 大于现有页面数，则返回到首页。
          */
         delta?: number;
-    }): void;
+    }): Promise<any>;
                     
     /**
      * 创建一个动画实例animation。调用实例的方法来描述动画。最后通过动画实例的export方法导出动画数据传递给组件的animation属性。
@@ -1442,38 +1016,12 @@ declare var wx: {
     /**
      * 调用接口获取登录凭证（code）进而换取用户登录态信息，包括用户的唯一标识（openid） 及本次登录的 会话密钥（session_key）。用户数据的加解密通讯需要依赖会话密钥完成。
      */
-    login(obj: {
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    login(): Promise<any>;
                     
     /**
      * 检查登陆态是否过期
      */
-    checkSession(obj: {
-        /**
-         * 接口调用成功的回调函数，登陆态未过期
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数，登陆态已过期
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    checkSession(): Promise<any>;
                     
     /**
      * 发起微信支付。
@@ -1499,18 +1047,6 @@ declare var wx: {
          * 签名,具体签名方案参见微信公众号支付帮助文档;
          */
         paySign: string;
-        /**
-         * 接口调用成功的回调函数
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
+    }): Promise<any>;
                     
 }

@@ -23,6 +23,12 @@ const Types = {
 
 const ApiDocUrl = "http://mp.weixin.qq.com/debug/wxadoc/dev/api/";
 
+const isFunctionNeedToBePromisified = function(funcName) {
+    return [ "clearStorage", "hideToast", "showNavigationBarLoading", "hideNavigationBarLoading", "drawCanvas", "canvasToTempFilePath", "hideKeyboard" ].indexOf(funcName) === -1 
+        && !/^(on|create|stop|pause|close)/.test(funcName) 
+        && !/\w+Sync$/.test(funcName);  
+}
+
 const readFile = function(src) {
     return new Promise((resolve, reject) => {
         fs.readFile(src, (err, data) => {
@@ -116,7 +122,7 @@ const getApiContent = function (url) {
                 apis.push({
                     url,
                     name: $(item).text().replace(/\(.*\)$/,''),
-                    description: $(item).next('p').text(),
+                    description: $(item).next('p').text().indexOf('参数说明') === -1 ? $(item).next('p').text(): "",
                     params
                 });
             });
@@ -125,24 +131,10 @@ const getApiContent = function (url) {
         })
 };
 
-getApiList(ApiDocUrl)
-    .then(apiList => {
-        //apiList.splice(1);
-        return Promise.all(apiList.map(category => {
-            return Promise.all(category.items.map(item => {
-                return getApiContent(item.url)
-                    .then(apis => {
-                        return Object.assign({}, item, {apis})
-                    })
-            }))
-            .then(list => {
-                return Object.assign({}, category, {items: list})
-            })
-        }))
-    })
-    .then(apiList => {
-        let dts = `declare var wx: {`;
-
+const getDefinitions = function(apiList) {
+    let list = [];
+    let dts = `declare var wx: {`;
+    
         apiList.forEach(cat => {
             dts += `
     // # ${cat.name} # 
@@ -151,11 +143,18 @@ getApiList(ApiDocUrl)
             cat.items.forEach(item => {
                 item.apis.forEach((api) => {
                     const funcName = api.name.replace(/^wx\./,'');
-                    dts += `
+                    if (list.indexOf(funcName) !== -1) {
+                        return;
+                    }
+                    list.push(funcName);
+                    if (api.description) {
+                        dts += `
     /**
      * ${api.description}
-     */
-    ${funcName}(`
+     */`;
+                    }
+                        dts +=`
+    ${funcName}(`;
                     api.params.forEach((param, index) => {
                         if (param.type === "OBJECT") {
                             dts += `obj: {`;
@@ -209,11 +208,119 @@ getApiList(ApiDocUrl)
         dts += `
 }`
         return dts;
+};
+
+const getPromisifiedDefinitions = function(apiList) {
+        let list = [];
+        let dts = `declare var wx: {`;
+    
+        apiList.forEach(cat => {
+            dts += `
+    // # ${cat.name} # 
+    `;
+
+            cat.items.forEach(item => {
+                item.apis.forEach((api) => {
+                    const funcName = api.name.replace(/^wx\./,'');
+                    if (list.indexOf(funcName) !== -1) {
+                        return;
+                    }
+                    list.push(funcName);
+                    if (api.description) {
+                        dts += `
+    /**
+     * ${api.description}
+     */`;
+                    }
+                        dts +=`
+    ${funcName}(`;
+                    let returnType = "void";
+                    const promised = isFunctionNeedToBePromisified(funcName);
+                    if (promised) {
+                        returnType = "Promise<any>";
+                    }
+                    api.params.forEach((param, index) => {
+                        if (param.type === "OBJECT") {
+                            if (param.keys.map(key => key.name).sort().join(",") === "complete,fail,success") {
+                                return;
+                            }
+                            dts += `obj: {`;
+                            param.keys.forEach((key,index) => {
+                                if (promised && /^(success|fail|complete)$/.test(key.name)) {
+                                    return;
+                                }
+                                dts += `
+        /**
+         * ${key.description}
+         */
+        ${key.name}${key.required === "是" ? "" : "?"}: `
+                                const types = key.type.split('、');
+                                if (types.length > 1) {
+                                    dts += types.map(t => Types[t.toLowerCase()]).join(' | ')
+                                } else {
+                                    dts += Types[key.type.toLowerCase()]
+                                }
+                                dts += `;`
+                            });
+
+                            dts += `
+    }`;
+
+                        } else if (param.type === "CALLBACK") {
+                            dts += "callback: Function";
+                        } else if (param.type === "KEY") {
+                            dts += "key: string";
+                        } else if (param.type === "DATA") {
+                            dts += "data: any";
+                        }
+                        if (api.params.length > 1 && index < api.params.length) {
+                            dts += ", "
+                        }
+                    });
+
+                    if (funcName === "createContext") {
+                        returnType = "IContext";
+                    } else if (funcName === "createAnimation") {
+                        returnType = "IAnimation";
+                    } else if (funcName === "createAudioContext") {
+                        returnType = "IAudioContext";
+                    } else if (funcName === "createVideoContext") {
+                        returnType = "IVideoContext";
+                    }
+                    dts += `): ${returnType};
+                    `;
+                })
+            });
+
+        });
+
+        dts += `
+}`
+        return dts;
+};
+
+getApiList(ApiDocUrl)
+    .then(apiList => {
+        //apiList.splice(1);
+        return Promise.all(apiList.map(category => {
+            return Promise.all(category.items.map(item => {
+                return getApiContent(item.url)
+                    .then(apis => {
+                        return Object.assign({}, item, {apis})
+                    })
+            }))
+            .then(list => {
+                return Object.assign({}, category, {items: list})
+            })
+        }))
     })
-    .then(dts => {
+    .then(apiList => {
+        return [getDefinitions(apiList), getPromisifiedDefinitions(apiList)]
+    })
+    .then(([dts, pdts]) => {
         return readFile('./definitions.tpl')
             .then(data => {
-                return writeFile('./wx.d.ts', data + dts);
+                return Promise.all([writeFile('./wx.d.ts', data + dts), writeFile('./wxPromise.d.ts', data + pdts)]);
             })
     })
     .then(() => {
