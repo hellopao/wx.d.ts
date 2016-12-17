@@ -7,3 +7,6 @@ typescript definition file for [weixin app](https://mp.weixin.qq.com/debug/wxado
 ```bash
 npm run build
 ```
+
+## simple usage
+copy wx.d.ts to your typing directory.
