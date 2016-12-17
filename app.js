@@ -5,6 +5,11 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 const request = require('request');
 
+const sharpBug = [
+    'open.html'
+];
+
+
 const Types = {
     "string": "string",
     "number": "number",
@@ -88,22 +93,37 @@ const getApiList = function(url) {
             return apiList;
         })
 };
+const testIsSharpBug = function(url){
+    for(let i=0;i<sharpBug.length;i++){
+        if(url.indexOf(sharpBug[i])>=0){
+            return true;
+        }
+    }
+    return false;
+};
 
 const getApiContent = function (url) {
     return getPageData(url)
         .then(body => {
             const $ = cheerio.load(body);
             let apis = [];
-            $('section.markdown-section').find('h3')
+            let find = 'h3';
+            let startwith = 'wx';
+            if(testIsSharpBug(url)){
+                find = 'p';
+                startwith = '### wx.';
+            }
+            $('section.markdown-section').find(find)
                 .filter((_, item)=> {
-                    return $(item).text().startsWith('wx');
-                }).each((_, item) => {
+                    return $(item).text().startsWith(startwith);
+                }).each(getContentFun);
+            function getContentFun(_, item) {
                     let params = [];
                     $(item).text().replace(/\(([^\)]+)\)/, (str, paramStr) => {
                         paramStr.split(',').forEach((type, index) => {
                             params[index] = {type, keys: []}
                             let table = $(item).nextAll().filter((_,next) => {
-                                return $(next).is('table') && _ <= 4;	
+                                return $(next).is('table') && _ <= 4;
                             }).first();
                             if (table && table.is('table')) {
                                 table.find('tbody tr').each((_, item) => {
@@ -125,8 +145,7 @@ const getApiContent = function (url) {
                     description: $(item).next('p').text().indexOf('参数说明') === -1 ? $(item).next('p').text(): "",
                     params
                 });
-            });
-
+            };
             return apis;
         })
 };
@@ -320,6 +339,9 @@ getApiList(ApiDocUrl)
     .then(([dts, pdts]) => {
         return readFile('./definitions.tpl')
             .then(data => {
+                data = '// generate time:'+ new Date().toLocaleString()+' \n' + data;
+                dts = dts.replace(/### wx\./g,'');
+                pdts = pdts.replace(/### wx\./g,'');
                 return Promise.all([writeFile('./wx.d.ts', data + dts), writeFile('./wxPromise.d.ts', data + pdts)]);
             })
     })
