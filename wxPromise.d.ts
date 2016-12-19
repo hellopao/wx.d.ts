@@ -1,3 +1,4 @@
+// generate time:2016-12-18 01:08:43 
 // Type definitions for wx app
 // Definitions by: hellopao <https://github.com/hellopao/wx.d.ts>
 
@@ -1022,6 +1023,11 @@ declare var wx: {
      * 检查登陆态是否过期
      */
     checkSession(): Promise<any>;
+                    
+    /**
+     * 获取用户信息，需要先调用 wx.login 接口。
+     */
+    getUserInfo(): Promise<any>;
                     
     /**
      * 发起微信支付。

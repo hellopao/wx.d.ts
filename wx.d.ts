@@ -1,3 +1,4 @@
+// generate time:2016-12-18 01:08:43 
 // Type definitions for wx app
 // Definitions by: hellopao <https://github.com/hellopao/wx.d.ts>
 
@@ -1467,6 +1468,24 @@ declare var wx: {
         success?: Function;
         /**
          * 接口调用失败的回调函数，登陆态已过期
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 获取用户信息，需要先调用 wx.login 接口。
+     */
+    getUserInfo(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
          */
         fail?: Function;
         /**
