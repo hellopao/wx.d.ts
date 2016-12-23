@@ -138,7 +138,7 @@ interface ICanvasContext {
     /**
      * 创建一个线性的渐变颜色。需要使用 addColorStop() 来指定渐变点，至少要两个。
      */ 
-    createLinearGradient(x0: number, y0: number, y1: number, y1: number): void;
+    createLinearGradient(x0: number, y0: number, x1: number, y1: number): void;
     /**
      * 创建一个圆形的渐变颜色。 起点在圆心，终点在圆环。 需要使用 addColorStop() 来指定渐变点，至少要两个。
      */
