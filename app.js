@@ -5,11 +5,6 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 const request = require('request');
 
-const sharpBug = [
-    'open.html'
-];
-
-
 const Types = {
     "string": "string",
     "number": "number",
@@ -93,59 +88,83 @@ const getApiList = function(url) {
             return apiList;
         })
 };
-const testIsSharpBug = function(url){
-    for(let i=0;i<sharpBug.length;i++){
-        if(url.indexOf(sharpBug[i])>=0){
-            return true;
-        }
-    }
-    return false;
-};
 
-const getApiContent = function (url) {
+const getApiContent = function (api) {
+    const {url, name} = api;
     return getPageData(url)
         .then(body => {
             const $ = cheerio.load(body);
             let apis = [];
-            let find = 'h3';
-            let startwith = 'wx';
-            if(testIsSharpBug(url)){
-                find = 'p';
-                startwith = '### wx.';
-            }
-            $('section.markdown-section').find(find)
-                .filter((_, item)=> {
-                    return $(item).text().startsWith(startwith);
-                }).each(getContentFun);
-            function getContentFun(_, item) {
-                    let params = [];
-                    $(item).text().replace(/\(([^\)]+)\)/, (str, paramStr) => {
-                        paramStr.split(',').forEach((type, index) => {
-                            params[index] = {type, keys: []}
-                            let table = $(item).nextAll().filter((_,next) => {
-                                return $(next).is('table') && _ <= 4;
-                            }).first();
-                            if (table && table.is('table')) {
-                                table.find('tbody tr').each((_, item) => {
-                                    const tds = $(item).find('td');
-                                    params[index].keys.push({
-                                        name: tds.eq(0).text(),
-                                        type: tds.eq(1).text(),
-                                        required: tds.eq(2).text(),
-                                        description: tds.eq(3).text()
+
+            if (name === "地图组件控制") {
+                apis = [{
+                    url,
+                    name: "createMapContext",
+                    description: "创建并返回 map 上下文 mapContext 对象",
+                    params: [{
+                        name: "mapId",
+                        type: "string",
+                        required: true,
+                        description: "地图表示，传入定义在 <map/> 的 map-id"
+                    }]
+                }]
+            } else if (name === "绘图") {
+                apis = [{
+                    url,
+                    name: "createCanvasContext",
+                    description: "创建 canvas 绘图上下文（指定 canvasId）.Tip: 需要指定 canvasId，该绘图上下文只作用于对应的 <canvas/>",
+                    params: [{
+                        name: "canvasId",
+                        type: "string",
+                        required: true,
+                        description: "画布表示，传入定义在 <canvas/> 的 canvas-id"
+                    }]
+                }, {
+                    url,
+                    name: "canvasToTempFilePath",
+                    description: "把当前画布的内容导出生成图片，并返回文件路径",
+                    params: [{
+                        name: "canvasId",
+                        type: "string",
+                        required: true,
+                        description: "画布表示，传入定义在 <canvas/> 的 canvas-id"
+                    }]
+                }];
+            } else {
+                $('section.markdown-section').find("h3")
+                    .filter((_, item)=> {
+                        return $(item).text().startsWith("wx");
+                    }).each((_, item) => {
+                        let params = [];
+                        $(item).text().replace(/\(([^\)]+)\)/, (str, paramStr) => {
+                            paramStr.split(',').forEach((type, index) => {
+                                params[index] = {type, keys: []}
+                                let table = $(item).nextAll().filter((_,next) => {
+                                    return $(next).is('table') && _ <= 4;
+                                }).first();
+                                if (table && table.is('table')) {
+                                    table.find('tbody tr').each((_, item) => {
+                                        const tds = $(item).find('td');
+                                        params[index].keys.push({
+                                            name: tds.eq(0).text(),
+                                            type: tds.eq(1).text(),
+                                            required: tds.eq(2).text(),
+                                            description: tds.eq(3).text()
+                                        })
                                     })
-                                })
-                            }
+                                }
+                            });
+                        });
+
+                        apis.push({
+                            url,
+                            name: $(item).text().replace(/\(.*\)$/,''),
+                            description: $(item).next('p').text().indexOf('参数说明') === -1 ? $(item).next('p').text(): "",
+                            params
                         });
                     });
+            }
 
-                apis.push({
-                    url,
-                    name: $(item).text().replace(/\(.*\)$/,''),
-                    description: $(item).next('p').text().indexOf('参数说明') === -1 ? $(item).next('p').text(): "",
-                    params
-                });
-            };
             return apis;
         })
 };
@@ -201,6 +220,8 @@ const getDefinitions = function(apiList) {
                             dts += "key: string";
                         } else if (param.type === "DATA") {
                             dts += "data: any";
+                        } else {
+                            dts += `${param.name || param.type}: string`;
                         }
                         if (api.params.length > 1 && index < api.params.length) {
                             dts += ", "
@@ -208,14 +229,16 @@ const getDefinitions = function(apiList) {
                     });
 
                     let returnType = "void";
-                    if (funcName === "createContext") {
-                        returnType = "IContext";
+                    if (funcName === "createCanvasContext") {
+                        returnType = "ICanvasContext";
                     } else if (funcName === "createAnimation") {
                         returnType = "IAnimation";
                     } else if (funcName === "createAudioContext") {
                         returnType = "IAudioContext";
                     } else if (funcName === "createVideoContext") {
                         returnType = "IVideoContext";
+                    } else if (funcName === "createMapContext") {
+                        returnType = "IMapContext";
                     }
                     dts += `): ${returnType};
                     `;
@@ -297,8 +320,8 @@ const getPromisifiedDefinitions = function(apiList) {
                         }
                     });
 
-                    if (funcName === "createContext") {
-                        returnType = "IContext";
+                    if (funcName === "createCanvasContext") {
+                        returnType = "ICanvasContext";
                     } else if (funcName === "createAnimation") {
                         returnType = "IAnimation";
                     } else if (funcName === "createAudioContext") {
@@ -323,7 +346,7 @@ getApiList(ApiDocUrl)
         //apiList.splice(1);
         return Promise.all(apiList.map(category => {
             return Promise.all(category.items.map(item => {
-                return getApiContent(item.url)
+                return getApiContent(item)
                     .then(apis => {
                         return Object.assign({}, item, {apis})
                     })

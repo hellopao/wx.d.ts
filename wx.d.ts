@@ -1,4 +1,4 @@
-// generate time:2016-12-18 01:08:43 
+// generate time:2016-12-23 14:43:18 
 // Type definitions for wx app
 // Definitions by: hellopao <https://github.com/hellopao/wx.d.ts>
 
@@ -123,47 +123,63 @@ interface IAnimation {
     matrix3d(): IAnimation;
 }
 
-interface IContext {
+interface ICanvasContext {
     /**
-     * 获取当前context上存储的绘图动作
+     * 设置填充色, 如果没有设置 fillStyle，默认颜色为 black。
      */
-    getActions(): Array<any>;
+    setFillStyle(color: string): void;
     /**
-     * 清空当前的存储绘图动作
+     * 设置边框颜色, 如果没有设置 fillStyle，默认颜色为 black。
      */
-    clearActions(): void;
+    setStrokeStyle(color: string): void;
     /**
-     * 对横纵坐标进行缩放
+     * 设置阴影
      */
-    scale(scaleWidth: number/**横坐标缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */, scaleHeight: number/**	纵坐标轴缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */): void;
+    setShadow(offsetX: number, offsetY: number, blur: number, color: string): void;
     /**
-     * 对坐标轴进行顺时针旋转
-     */
-    rotate(deg: number/**degrees * Math.PI/180；degrees范围为0~360;旋转角度，以弧度计 */): void;
+     * 创建一个线性的渐变颜色。需要使用 addColorStop() 来指定渐变点，至少要两个。
+     */ 
+    createLinearGradient(x0: number, y0: number, y1: number, y1: number): void;
     /**
-     * 对坐标原点进行缩放
+     * 创建一个圆形的渐变颜色。 起点在圆心，终点在圆环。 需要使用 addColorStop() 来指定渐变点，至少要两个。
      */
-    translate(x: number/**水平坐标平移量 */, y: number/**竖直坐标平移量 */): void;
+    createCircularGradient(x: number, y: number, r: number): void;
     /**
-     * 保存当前坐标轴的缩放、旋转、平移信息
+     * 创建一个颜色的渐变点。小于最小 stop 的部分会按最小 stop 的 color 来渲染，大于最大 stop 的部分会按最大 stop 的 color 来渲染。需要使用 addColorStop() 来指定渐变点，至少要两个。
      */
-    save(): void;
+    addColorStop(stop: number, color: string): void;
     /**
-     * 恢复之前保存过的坐标轴的缩放、旋转、平移信息
+     * 设置线条端点的样式
      */
-    restore(): void;
+    setLineCap(lineCap: 'butt' | 'round' | 'square'): void;
+    /**
+     * 设置两线相交处的样式
+     */
+    setLineJoin(lineJoin: 'bevel' | 'round' | 'miter'): void;
+    /**
+     * 设置线条宽度
+     */
+    setLineWidth(lineWidth: number): void;
+    /**
+     * 设置最大倾斜
+     */
+    setMiterLimit(miterLimit: number): void;
+    /**
+     * 添加一个矩形路径到当前路径。
+     */
+    rect(x: number, y: number, width: number, height: number): void;
+    /** 
+     * 填充一个矩形。用 setFillStyle() 设置矩形的填充色，如果没设置默认是黑色。
+     */
+    fillRect(x: number, y: number, width: number, height: number): void;
+    /** 
+     * 一个矩形(非填充)。用 setFillStroke() 设置矩形线条的颜色，如果没设置默认是黑色。
+     */
+    strokeRect(x: number, y: number, width: number, height: number): void;
     /**
      * 在给定的矩形区域内，清除画布上的像素
      */
     clearRect(x: number, y: number, width: number, height: number): void;
-    /**
-     * 在画布上绘制被填充的文本
-     */
-    fillText(text: string, x: number, y: number): void;
-    /**
-     * 在画布上绘制图像
-     */
-    drawImage(imageResource: string, x: number, y: number, width: number, height: number): void;
     /**
      * 对当前路径进行填充
      */
@@ -189,10 +205,6 @@ interface IContext {
      */
     lineTo(x: number, y: number): void;
     /**
-     * 添加一个矩形路径到当前路径。
-     */
-    rect(x: number, y: number, width: number, height: number): void;
-    /**
      * 添加一个弧形路径到当前路径，顺时针绘制。
      */
     arc(x: number, y: number, radius: number, startAngle: number, sweepAngle: number): void;
@@ -205,37 +217,45 @@ interface IContext {
      */
     bezierCurveTo(cpx1: number, cpy1: number, cpx2: number, cpy2: number, x: number, y: number): void;
     /**
-     * 设置填充样式
+     * 对横纵坐标进行缩放
      */
-    setFillStyle(color: string): void;
+    scale(scaleWidth: number/**横坐标缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */, scaleHeight: number/**	纵坐标轴缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */): void;
     /**
-     * 设置线条样式
+     * 对坐标轴进行顺时针旋转
      */
-    setStrokeStyle(color: string): void;
+    rotate(deg: number/**degrees * Math.PI/180；degrees范围为0~360;旋转角度，以弧度计 */): void;
     /**
-     * 设置阴影
+     * 对坐标原点进行缩放
      */
-    setShadow(offsetX: number, offsetY: number, blur: number, color: string): void;
+    translate(x: number/**水平坐标平移量 */, y: number/**竖直坐标平移量 */): void;
+    /**
+     * 在画布上绘制被填充的文本
+     */
+    fillText(text: string, x: number, y: number): void;
     /**
      * 设置字体大小
      */
     setFontSize(fontSize: number): void;
     /**
-     * 设置线条端点的样式
+     * 在画布上绘制图像
      */
-    setLineCap(lineCap: 'butt' | 'round' | 'square'): void;
+    drawImage(imageResource: string, x: number, y: number, width: number, height: number): void;
+    /** 
+     * 设置全局画笔透明度。
+     */
+    setGlobalAlpha(alpha: number): void;
     /**
-     * 设置两线相交处的样式
+     * 保存当前坐标轴的缩放、旋转、平移信息
      */
-    setLineJoin(lineJoin: 'bevel' | 'round' | 'miter'): void;
+    save(): void;
     /**
-     * 设置线条宽度
+     * 恢复之前保存过的坐标轴的缩放、旋转、平移信息
      */
-    setLineWidth(lineWidth: number): void;
+    restore(): void;
     /**
-     * 设置最大倾斜
+     * 进行绘图
      */
-    setMiterLimit(miterLimit: number): void;
+    draw(): void;
 }
 
 interface IAudioContext {
@@ -270,6 +290,30 @@ interface IVideoContext {
      * 发送弹幕，danmu 包含两个属性 text, color。
      */
     sendDanmu: (danmu: {text: string; color: string;}) => void;
+}
+
+interface IMapContext {
+    /**
+     * 获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 wx.openLocation
+     */
+    getCenterLocation: (obj: {
+        /** 
+         * 接口调用成功的回调函数 ，res = { longitude: "经度", latitude: "纬度"}
+         */
+        success?: (res: {longitude: string; latitude: string}) => void;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: () => void;
+        /** 
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: () => void;
+    }) => void;
+    /**
+     * 将地图中心移动到当前定位点，需要配合map组件的show-location使用
+     */
+    moveToLocation: () => void;
 }
 
 interface Application {
@@ -340,6 +384,23 @@ interface PageConstructor {
          * 页面上拉触底事件的处理函数
          */
         onReachBottom?: () => void;
+        /**
+         * 用户点击右上角分享
+         */
+        onShareAppMessage?: () => {
+            /**
+             * 分享标题, 默认值当前小程序名称
+             */
+            title: string;
+            /**
+             * 分享描述, 默认值当前小程序名称
+             */
+            desc: string;
+            /**
+             * 分享路径	默认值当前页面 path ，必须是以 / 开头的完整路径
+             */
+            path: string;
+        };	
 
         [key: string]: any;
     }): Page;
@@ -351,7 +412,7 @@ declare var wx: {
     // # 网络 # 
     
     /**
-     * wx.request发起的是 HTTPS 请求。一个微信小程序，同时只能有5个网络请求连接。
+     * wx.request发起的是 HTTPS 请求。
      */
     request(obj: {
         /**
@@ -370,6 +431,10 @@ declare var wx: {
          * 默认为 GET，有效值：OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
          */
         method?: string;
+        /**
+         * 默认为 json。如果设置了 dataType 为 json，则会尝试对响应的数据做一次 JSON.parse
+         */
+        dataType?: string;
         /**
          * 收到开发者服务成功返回的回调函数，res = {data: '开发者服务器返回的内容'}
          */
@@ -610,7 +675,7 @@ declare var wx: {
     }): void;
                     
     /**
-     * 开始录音。当主动调用wx.stopRecord，或者录音超过1分钟时自动结束录音，返回录音文件的临时文件路径。
+     * 开始录音。当主动调用wx.stopRecord，或者录音超过1分钟时自动结束录音，返回录音文件的临时文件路径。当用户离开小程序时，此接口无法调用。
      */
     startRecord(obj: {
         /**
@@ -665,7 +730,7 @@ declare var wx: {
     stopVoice(): void;
                     
     /**
-     * 获取音乐播放状态。
+     * 获取后台音乐播放状态。
      */
     getBackgroundAudioPlayerState(obj: {
         /**
@@ -683,7 +748,7 @@ declare var wx: {
     }): void;
                     
     /**
-     * 播放音乐，同时只能有一首音乐正在播放。
+     * 使用后台播放器播放音乐，对于微信客户端来说，只能同时有一个后台音乐在播放。当用户离开小程序后，音乐将暂停播放；当用户点击“显示在聊天顶部”时，音乐不会暂停播放；当用户在其他小程序占用了音乐播放器，原有小程序内的音乐将停止播放。
      */
     playBackgroundAudio(obj: {
         /**
@@ -759,6 +824,48 @@ declare var wx: {
      */
     onBackgroundAudioStop(callback: Function): void;
                     
+    /**
+     * 创建并返回 audio 上下文 audioContext 对象
+     */
+    createAudioContext(audioId: string): IAudioContext;
+                    
+    /**
+     * 拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
+     */
+    chooseVideo(obj: {
+        /**
+         * album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera']
+         */
+        sourceType?: string[];
+        /**
+         * 拍摄视频最长拍摄时间，单位秒。最长支持 60 秒
+         */
+        maxDuration?: number;
+        /**
+         * 默认调起的为前置还是后置摄像头。front: 前置，back: 后置，默认 back
+         */
+        camera?: string;
+        /**
+         * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 创建并返回 video 上下文 videoContext 对象
+     */
+    createVideoContext(videoId: string): IVideoContext;
+                    
+    // # 文件 # 
+    
     /**
      * 保存文件到本地。
      */
@@ -865,47 +972,7 @@ declare var wx: {
         complete?: Function;
     }): void;
                     
-    /**
-     * 拍摄视频或从手机相册中选视频，返回视频的临时文件路径。
-     */
-    chooseVideo(obj: {
-        /**
-         * album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera']
-         */
-        sourceType?: string[];
-        /**
-         * 拍摄视频最长拍摄时间，单位秒。最长支持60秒
-         */
-        maxDuration?: number;
-        /**
-         * 前置或者后置摄像头，默认为前后都有，即：['front', 'back']
-         */
-        camera?: string[];
-        /**
-         * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
-         */
-        success?: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-                    
-    /**
-     * 创建并返回 audio 上下文 audioContext 对象
-     */
-    createAudioContext(): IAudioContext;
-                    
-    /**
-     * 创建并返回 video 上下文 videoContext 对象
-     */
-    createVideoContext(): IVideoContext;
-                    
-    // # 数据 # 
+    // # 数据缓存 # 
     
     /**
      * 将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口。
@@ -1028,7 +1095,7 @@ declare var wx: {
     // # 位置 # 
     
     /**
-     * 获取当前的地理位置、速度。
+     * 获取当前的地理位置、速度。当用户离开小程序后，此接口无法调用；当用户点击“显示在聊天顶部”时，此接口可继续调用。
      */
     getLocation(obj: {
         /**
@@ -1084,7 +1151,7 @@ declare var wx: {
          */
         longitude: number;
         /**
-         * 缩放比例，范围1~28，默认为28
+         * 缩放比例，范围5~18，默认为18
          */
         scale?: number;
         /**
@@ -1109,26 +1176,13 @@ declare var wx: {
         complete?: Function;
     }): void;
                     
+    /**
+     * 创建并返回 map 上下文 mapContext 对象
+     */
+    createMapContext(mapId: string): IMapContext;
+                    
     // # 设备 # 
     
-    /**
-     * 获取网络类型。
-     */
-    getNetworkType(obj: {
-        /**
-         * 接口调用成功，返回网络类型 networkType
-         */
-        success: Function;
-        /**
-         * 接口调用失败的回调函数
-         */
-        fail?: Function;
-        /**
-         * 接口调用结束的回调函数（调用成功、失败都会执行）
-         */
-        complete?: Function;
-    }): void;
-                    
     /**
      * 获取系统信息。
      */
@@ -1151,6 +1205,24 @@ declare var wx: {
      * 获取系统信息同步接口
      */
     getSystemInfoSync(): void;
+                    
+    /**
+     * 获取网络类型。
+     */
+    getNetworkType(obj: {
+        /**
+         * 接口调用成功，返回网络类型 networkType
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
                     
     /**
      * 监听重力感应数据，频率：5次/秒
@@ -1181,6 +1253,24 @@ declare var wx: {
         complete?: Function;
     }): void;
                     
+    /**
+     * 调起客户端扫码界面，扫码成功后返回对应的结果
+     */
+    scanCode(obj: {
+        /**
+         * 接口调用成功的回调函数，返回内容详见返回参数说明。
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
     // # 界面 # 
     
     /**
@@ -1199,6 +1289,10 @@ declare var wx: {
          * 提示的延迟时间，单位毫秒，默认：1500, 最大为10000
          */
         duration?: number;
+        /**
+         * 是否显示透明蒙层，防止触摸穿透，默认：false
+         */
+        mask?: boolean;
         /**
          * 接口调用成功的回调函数
          */
@@ -1327,7 +1421,7 @@ declare var wx: {
      */
     navigateTo(obj: {
         /**
-         * 需要跳转的应用内页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'
+         * 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'
          */
         url: string;
         /**
@@ -1349,7 +1443,29 @@ declare var wx: {
      */
     redirectTo(obj: {
         /**
-         * 需要跳转的应用内页面的路径
+         * 需要跳转的应用内非 tabBar 的页面的路径，路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'
+         */
+        url: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    /**
+     * 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
+     */
+    switchTab(obj: {
+        /**
+         * 需要跳转的 tabBar 页面的路径（需在 app.json 的 tabBar 字段定义的页面），路径后不能带参数
          */
         url: string;
         /**
@@ -1399,42 +1515,17 @@ declare var wx: {
     }): IAnimation;
                     
     /**
-     * 创建并返回绘图上下文context对象。
+     * 创建 canvas 绘图上下文（指定 canvasId）.Tip: 需要指定 canvasId，该绘图上下文只作用于对应的 <canvas/>
      */
-    createContext(): IContext;
-                    
-    drawCanvas(obj: {
-        /**
-         * 画布标识，传入 <canvas/> 的 cavas-id
-         */
-        canvasId: string;
-        /**
-         * 绘图动作数组，由 wx.createContext 创建的 context，调用 getActions 方法导出绘图动作数组。
-         */
-        actions: Array<any>;
-        /**
-         * 本次绘制是否接着上一次绘制，即reserve参数为false，则在本次调用drawCanvas绘制之前native层应先清空画布再继续绘制；若reserver参数为true，则保留当前画布上的内容，本次调用drawCanvas绘制的内容覆盖在上面，默认 false
-         */
-        reserve?: boolean;
-    }): void;
+    createCanvasContext(canvasId: string): ICanvasContext;
                     
     /**
      * 把当前画布的内容导出生成图片，并返回文件路径
      */
-    canvasToTempFilePath(obj: {
-        /**
-         * 画布标识，传入 <canvas/> 的 cavas-id
-         */
-        canvasId: string;
-    }): void;
+    canvasToTempFilePath(canvasId: string): void;
                     
     /**
-     * 收起键盘。
-     */
-    hideKeyboard(): void;
-                    
-    /**
-     * 停止当前页面下拉刷新。详见页面相关事件处理函数。
+     * 停止当前页面下拉刷新。
      */
     stopPullDownRefresh(): void;
                     

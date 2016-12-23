@@ -35,7 +35,7 @@ const animation = wx.createAnimation({});
 
 animation.scaleX(1);
 
-const context = wx.createContext();
+const context = wx.createCanvasContext();
 
 context.beginPath();
 context.lineTo(1,1);

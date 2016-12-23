@@ -122,47 +122,63 @@ interface IAnimation {
     matrix3d(): IAnimation;
 }
 
-interface IContext {
+interface ICanvasContext {
     /**
-     * 获取当前context上存储的绘图动作
+     * 设置填充色, 如果没有设置 fillStyle，默认颜色为 black。
      */
-    getActions(): Array<any>;
+    setFillStyle(color: string): void;
     /**
-     * 清空当前的存储绘图动作
+     * 设置边框颜色, 如果没有设置 fillStyle，默认颜色为 black。
      */
-    clearActions(): void;
+    setStrokeStyle(color: string): void;
     /**
-     * 对横纵坐标进行缩放
+     * 设置阴影
      */
-    scale(scaleWidth: number/**横坐标缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */, scaleHeight: number/**	纵坐标轴缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */): void;
+    setShadow(offsetX: number, offsetY: number, blur: number, color: string): void;
     /**
-     * 对坐标轴进行顺时针旋转
-     */
-    rotate(deg: number/**degrees * Math.PI/180；degrees范围为0~360;旋转角度，以弧度计 */): void;
+     * 创建一个线性的渐变颜色。需要使用 addColorStop() 来指定渐变点，至少要两个。
+     */ 
+    createLinearGradient(x0: number, y0: number, y1: number, y1: number): void;
     /**
-     * 对坐标原点进行缩放
+     * 创建一个圆形的渐变颜色。 起点在圆心，终点在圆环。 需要使用 addColorStop() 来指定渐变点，至少要两个。
      */
-    translate(x: number/**水平坐标平移量 */, y: number/**竖直坐标平移量 */): void;
+    createCircularGradient(x: number, y: number, r: number): void;
     /**
-     * 保存当前坐标轴的缩放、旋转、平移信息
+     * 创建一个颜色的渐变点。小于最小 stop 的部分会按最小 stop 的 color 来渲染，大于最大 stop 的部分会按最大 stop 的 color 来渲染。需要使用 addColorStop() 来指定渐变点，至少要两个。
      */
-    save(): void;
+    addColorStop(stop: number, color: string): void;
     /**
-     * 恢复之前保存过的坐标轴的缩放、旋转、平移信息
+     * 设置线条端点的样式
      */
-    restore(): void;
+    setLineCap(lineCap: 'butt' | 'round' | 'square'): void;
+    /**
+     * 设置两线相交处的样式
+     */
+    setLineJoin(lineJoin: 'bevel' | 'round' | 'miter'): void;
+    /**
+     * 设置线条宽度
+     */
+    setLineWidth(lineWidth: number): void;
+    /**
+     * 设置最大倾斜
+     */
+    setMiterLimit(miterLimit: number): void;
+    /**
+     * 添加一个矩形路径到当前路径。
+     */
+    rect(x: number, y: number, width: number, height: number): void;
+    /** 
+     * 填充一个矩形。用 setFillStyle() 设置矩形的填充色，如果没设置默认是黑色。
+     */
+    fillRect(x: number, y: number, width: number, height: number): void;
+    /** 
+     * 一个矩形(非填充)。用 setFillStroke() 设置矩形线条的颜色，如果没设置默认是黑色。
+     */
+    strokeRect(x: number, y: number, width: number, height: number): void;
     /**
      * 在给定的矩形区域内，清除画布上的像素
      */
     clearRect(x: number, y: number, width: number, height: number): void;
-    /**
-     * 在画布上绘制被填充的文本
-     */
-    fillText(text: string, x: number, y: number): void;
-    /**
-     * 在画布上绘制图像
-     */
-    drawImage(imageResource: string, x: number, y: number, width: number, height: number): void;
     /**
      * 对当前路径进行填充
      */
@@ -188,10 +204,6 @@ interface IContext {
      */
     lineTo(x: number, y: number): void;
     /**
-     * 添加一个矩形路径到当前路径。
-     */
-    rect(x: number, y: number, width: number, height: number): void;
-    /**
      * 添加一个弧形路径到当前路径，顺时针绘制。
      */
     arc(x: number, y: number, radius: number, startAngle: number, sweepAngle: number): void;
@@ -204,37 +216,45 @@ interface IContext {
      */
     bezierCurveTo(cpx1: number, cpy1: number, cpx2: number, cpy2: number, x: number, y: number): void;
     /**
-     * 设置填充样式
+     * 对横纵坐标进行缩放
      */
-    setFillStyle(color: string): void;
+    scale(scaleWidth: number/**横坐标缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */, scaleHeight: number/**	纵坐标轴缩放的倍数1 = 100%，0.5 = 50%，2 = 200%，依次类 */): void;
     /**
-     * 设置线条样式
+     * 对坐标轴进行顺时针旋转
      */
-    setStrokeStyle(color: string): void;
+    rotate(deg: number/**degrees * Math.PI/180；degrees范围为0~360;旋转角度，以弧度计 */): void;
     /**
-     * 设置阴影
+     * 对坐标原点进行缩放
      */
-    setShadow(offsetX: number, offsetY: number, blur: number, color: string): void;
+    translate(x: number/**水平坐标平移量 */, y: number/**竖直坐标平移量 */): void;
+    /**
+     * 在画布上绘制被填充的文本
+     */
+    fillText(text: string, x: number, y: number): void;
     /**
      * 设置字体大小
      */
     setFontSize(fontSize: number): void;
     /**
-     * 设置线条端点的样式
+     * 在画布上绘制图像
      */
-    setLineCap(lineCap: 'butt' | 'round' | 'square'): void;
+    drawImage(imageResource: string, x: number, y: number, width: number, height: number): void;
+    /** 
+     * 设置全局画笔透明度。
+     */
+    setGlobalAlpha(alpha: number): void;
     /**
-     * 设置两线相交处的样式
+     * 保存当前坐标轴的缩放、旋转、平移信息
      */
-    setLineJoin(lineJoin: 'bevel' | 'round' | 'miter'): void;
+    save(): void;
     /**
-     * 设置线条宽度
+     * 恢复之前保存过的坐标轴的缩放、旋转、平移信息
      */
-    setLineWidth(lineWidth: number): void;
+    restore(): void;
     /**
-     * 设置最大倾斜
+     * 进行绘图
      */
-    setMiterLimit(miterLimit: number): void;
+    draw(): void;
 }
 
 interface IAudioContext {
@@ -269,6 +289,30 @@ interface IVideoContext {
      * 发送弹幕，danmu 包含两个属性 text, color。
      */
     sendDanmu: (danmu: {text: string; color: string;}) => void;
+}
+
+interface IMapContext {
+    /**
+     * 获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 wx.openLocation
+     */
+    getCenterLocation: (obj: {
+        /** 
+         * 接口调用成功的回调函数 ，res = { longitude: "经度", latitude: "纬度"}
+         */
+        success?: (res: {longitude: string; latitude: string}) => void;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: () => void;
+        /** 
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: () => void;
+    }) => void;
+    /**
+     * 将地图中心移动到当前定位点，需要配合map组件的show-location使用
+     */
+    moveToLocation: () => void;
 }
 
 interface Application {
@@ -339,6 +383,23 @@ interface PageConstructor {
          * 页面上拉触底事件的处理函数
          */
         onReachBottom?: () => void;
+        /**
+         * 用户点击右上角分享
+         */
+        onShareAppMessage?: () => {
+            /**
+             * 分享标题, 默认值当前小程序名称
+             */
+            title: string;
+            /**
+             * 分享描述, 默认值当前小程序名称
+             */
+            desc: string;
+            /**
+             * 分享路径	默认值当前页面 path ，必须是以 / 开头的完整路径
+             */
+            path: string;
+        };	
 
         [key: string]: any;
     }): Page;
