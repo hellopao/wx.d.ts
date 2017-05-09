@@ -1,4 +1,4 @@
-// generate time:2016-12-23 15:07:25 
+// generate time:2017-5-9 09:37:03 
 // Type definitions for wx app
 // Definitions by: hellopao <https://github.com/hellopao/wx.d.ts>
 
@@ -494,7 +494,7 @@ declare var wx: {
          */
         header?: any;
         /**
-         * 默认是GET，有效值为： OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+         * 默认是GET，有效值： OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
          */
         method?: string;
     }): Promise<any>;
@@ -882,15 +882,25 @@ declare var wx: {
      */
     getNetworkType(): Promise<any>;
                     
+    onNetworkStatusChange(callback: Function): void;
+                    
     /**
-     * 监听重力感应数据，频率：5次/秒
+     * 监听加速度数据，频率：5次/秒，接口调用后会自动开始监听，可使用 wx.stopAccelerometer 停止监听。
      */
     onAccelerometerChange(callback: Function): void;
                     
+    startAccelerometer(): Promise<any>;
+                    
+    stopAccelerometer(): void;
+                    
     /**
-     * 监听罗盘数据，频率：5次/秒
+     * 监听罗盘数据，频率：5次/秒，接口调用后会自动开始监听，可使用wx.stopCompass停止监听。
      */
     onCompassChange(callback: Function): void;
+                    
+    startCompass(): Promise<any>;
+                    
+    stopCompass(): void;
                     
     makePhoneCall(obj: {
         /**
@@ -904,6 +914,161 @@ declare var wx: {
      */
     scanCode(): Promise<any>;
                     
+    setClipboardData(obj: {
+        /**
+         * 需要设置的内容
+         */
+        data: string;
+    }): Promise<any>;
+                    
+    getClipboardData(): Promise<any>;
+                    
+    openBluetoothAdapter(): Promise<any>;
+                    
+    closeBluetoothAdapter(): void;
+                    
+    getBluetoothAdapterState(): Promise<any>;
+                    
+    onBluetoothAdapterStateChange(callback: Function): void;
+                    
+    startBluetoothDevicesDiscovery(obj: {
+        /**
+         * 蓝牙设备主 service 的 uuid 列表
+         */
+        services?: Array<any>;
+    }): Promise<any>;
+                    
+    stopBluetoothDevicesDiscovery(): void;
+                    
+    getBluetoothDevices(obj: {
+        /**
+         * 蓝牙设备主 service 的 uuid 列表
+         */
+        services?: Array<any>;
+    }): Promise<any>;
+                    
+    onBluetoothDeviceFound(callback: Function): void;
+                    
+    getConnectedBluetoothDevices(obj: {
+        /**
+         * 蓝牙设备主 service 的 uuid 列表
+         */
+        services: Array<any>;
+    }): Promise<any>;
+                    
+    createBLEConnection(obj: {
+        /**
+         * 蓝牙设备 id，参考 getDevices 接口
+         */
+        deviceId: string;
+        /**
+         * 成功则返回本机蓝牙适配器状态
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    closeBLEConnection(obj: {
+        /**
+         * 蓝牙设备 id，参考 getDevices 接口
+         */
+        deviceId: string;
+        /**
+         * 成功则返回本机蓝牙适配器状态
+         */
+        success: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    getBLEDeviceServices(obj: {
+        /**
+         * 蓝牙设备 id，参考 getDevices 接口
+         */
+        deviceId: string;
+    }): Promise<any>;
+                    
+    getBLEDeviceCharacteristics(obj: {
+        /**
+         * 蓝牙设备 id，参考 device 对象
+         */
+        deviceId: string;
+        /**
+         * 蓝牙服务 uuid
+         */
+        serviceId: string;
+    }): Promise<any>;
+                    
+    readBLECharacteristicValue(obj: {
+        /**
+         * 蓝牙设备 id，参考 device 对象
+         */
+        deviceId: string;
+        /**
+         * 蓝牙特征值对应服务的 uuid
+         */
+        serviceId: string;
+        /**
+         * 蓝牙特征值的 uuid
+         */
+        characteristicId: string;
+    }): Promise<any>;
+                    
+    writeBLECharacteristicValue(obj: {
+        /**
+         * 蓝牙设备 id，参考 device 对象
+         */
+        deviceId: string;
+        /**
+         * 蓝牙特征值对应服务的 uuid
+         */
+        serviceId: string;
+        /**
+         * 蓝牙特征值的 uuid
+         */
+        characteristicId: string;
+        /**
+         * 蓝牙设备特征值对应的二进制值
+         */
+        value: undefined;
+    }): Promise<any>;
+                    
+    notifyBLECharacteristicValueChange(obj: {
+        /**
+         * 蓝牙设备 id，参考 device 对象
+         */
+        deviceId: string;
+        /**
+         * 蓝牙特征值对应服务的 uuid
+         */
+        serviceId: string;
+        /**
+         * 蓝牙特征值的 uuid
+         */
+        characteristicId: string;
+        /**
+         * true: 启用 notify; false: 停用 notify
+         */
+        state: boolean;
+    }): Promise<any>;
+                    
+    onBLEConnectionStateChange(callback: Function): void;
+                    
+    onBLECharacteristicValueChange(callback: Function): void;
+                    
     // # 界面 # 
     
     /**
@@ -915,13 +1080,28 @@ declare var wx: {
          */
         title: string;
         /**
-         * 图标，只支持"success"、"loading"
+         * 图标，有效值 "success", "loading"
          */
         icon?: string;
         /**
-         * 提示的延迟时间，单位毫秒，默认：1500, 最大为10000
+         * 自定义图标的本地路径，image 的优先级高于 icon
+         */
+        image?: string;
+        /**
+         * 提示的延迟时间，单位毫秒，默认：1500
          */
         duration?: number;
+        /**
+         * 是否显示透明蒙层，防止触摸穿透，默认：false
+         */
+        mask?: boolean;
+    }): Promise<any>;
+                    
+    showLoading(obj: {
+        /**
+         * 提示的内容
+         */
+        title: string;
         /**
          * 是否显示透明蒙层，防止触摸穿透，默认：false
          */
@@ -932,6 +1112,8 @@ declare var wx: {
      * 隐藏消息提示框
      */
     hideToast(): void;
+                    
+    hideLoading(): Promise<any>;
                     
     /**
      * ​显示模态弹窗
@@ -1021,6 +1203,13 @@ declare var wx: {
         url: string;
     }): Promise<any>;
                     
+    reLaunch(obj: {
+        /**
+         * 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'
+         */
+        url: string;
+    }): Promise<any>;
+                    
     /**
      * 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
      */
@@ -1046,19 +1235,19 @@ declare var wx: {
      */
     createAnimation(obj: {
         /**
-         * 动画持续时间，单位ms，默认值 400
+         * 400
          */
         duration?: number;
         /**
-         * 定义动画的效果，默认值"linear"，有效值："linear","ease","ease-in","ease-in-out","ease-out","step-start","step-end"
+         * "linear"
          */
         timingFunction?: string;
         /**
-         * 动画延迟时间，单位 ms，默认值 0
+         * 0
          */
         delay?: number;
         /**
-         * 设置transform-origin，默认为"50% 50% 0"
+         * "50% 50% 0"
          */
         transformOrigin?: string;
     }): IAnimation;
@@ -1078,6 +1267,12 @@ declare var wx: {
      */
     stopPullDownRefresh(): void;
                     
+    // # 第三方平台 # 
+    
+    getExtConfig(): Promise<any>;
+                    
+    getExtConfigSync(): void;
+                    
     // # 开放接口 # 
     
     /**
@@ -1086,14 +1281,19 @@ declare var wx: {
     login(): Promise<any>;
                     
     /**
-     * 检查登陆态是否过期
+     * 通过上述接口获得的用户登录态拥有一定的时效性。用户越久未使用小程序，用户登录态越有可能失效。反之如果用户一直在使用小程序，则用户登录态一直保持有效。具体时效逻辑由微信维护，对开发者透明。开发者只需要调用wx.checkSession接口检测当前用户登录态是否有效。登录态过期后开发者可以再调用wx.login获取新的用户登录态。
      */
     checkSession(): Promise<any>;
                     
     /**
      * 获取用户信息，需要先调用 wx.login 接口。
      */
-    getUserInfo(): Promise<any>;
+    getUserInfo(obj: {
+        /**
+         * 是否带上登录态信息
+         */
+        withCredentials?: boolean;
+    }): Promise<any>;
                     
     /**
      * 发起微信支付。
@@ -1120,5 +1320,31 @@ declare var wx: {
          */
         paySign: string;
     }): Promise<any>;
+                    
+    chooseAddress(): Promise<any>;
+                    
+    addCard(obj: {
+        /**
+         * 需要添加的卡券列表
+         */
+        cardList: undefined;
+    }): Promise<any>;
+                    
+    openCard(obj: {
+        /**
+         * 需要打开的卡券列表
+         */
+        cardList: undefined;
+    }): Promise<any>;
+                    
+    openSetting(): Promise<any>;
+                    
+    // # 数据分析 # 
+    
+    // # 拓展接口 # 
+    
+    arrayBufferToBase64(): Promise<any>;
+                    
+    base64ToArrayBuffer(): Promise<any>;
                     
 }
