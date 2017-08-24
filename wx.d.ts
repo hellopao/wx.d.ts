@@ -1,4 +1,4 @@
-// generate time:2017-5-9 09:37:03 
+// generate time:2017-08-23 21:12:06 
 // Type definitions for wx app
 // Definitions by: hellopao <https://github.com/hellopao/wx.d.ts>
 
@@ -411,9 +411,6 @@ declare var Page: PageConstructor;
 declare var wx: {
     // # 网络 # 
     
-    /**
-     * wx.request发起的是 HTTPS 请求。
-     */
     request(obj: {
         /**
          * 开发者服务器接口地址
@@ -534,6 +531,10 @@ declare var wx: {
          */
         method?: string;
         /**
+         * 子协议数组
+         */
+        protocols?: string[];
+        /**
          * 接口调用成功的回调函数
          */
         success?: Function;
@@ -587,7 +588,28 @@ declare var wx: {
     /**
      * 关闭WebSocket连接。
      */
-    closeSocket(): void;
+    closeSocket(obj: {
+        /**
+         * 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭）
+         */
+        code?: number;
+        /**
+         * 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符）
+         */
+        reason?: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
                     
     /**
      * 监听WebSocket关闭。
@@ -660,6 +682,25 @@ declare var wx: {
          * 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径
          */
         src: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    saveImageToPhotosAlbum(obj: {
+        /**
+         * 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径
+         */
+        filePath: string;
         /**
          * 接口调用成功的回调函数
          */
@@ -752,7 +793,7 @@ declare var wx: {
      */
     playBackgroundAudio(obj: {
         /**
-         * 音乐链接
+         * 音乐链接，目前支持的格式有 m4a, aac, mp3, wav
          */
         dataUrl: string;
         /**
@@ -824,6 +865,8 @@ declare var wx: {
      */
     onBackgroundAudioStop(callback: Function): void;
                     
+    getBackgroundAudioManager(): void;
+                    
     /**
      * 创建并返回 audio 上下文 audioContext 对象
      */
@@ -847,6 +890,25 @@ declare var wx: {
         camera?: string;
         /**
          * 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    saveVideoToPhotosAlbum(obj: {
+        /**
+         * 视频文件路径，可以是临时文件路径也可以是永久文件路径
+         */
+        filePath: string;
+        /**
+         * 接口调用成功的回调函数
          */
         success?: Function;
         /**
@@ -907,7 +969,7 @@ declare var wx: {
     }): void;
                     
     /**
-     * 获取本地文件的文件信息
+     * 获取本地文件的文件信息。此接口只能用于获取已保存到本地的文件，若需要获取临时文件信息，请使用 wx.getFileInfo 接口。
      */
     getSavedFileInfo(obj: {
         /**
@@ -958,6 +1020,33 @@ declare var wx: {
          * 文件路径，可通过 downFile 获得
          */
         filePath: string;
+        /**
+         * 文件类型，指定文件类型打开文件，有效值 doc, xls, ppt, pdf, docx, xlsx, pptx
+         */
+        fileType?: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    getFileInfo(obj: {
+        /**
+         * 本地文件路径
+         */
+        filePath: string;
+        /**
+         * 计算文件摘要的算法，默认值 md5，有效值：md5，sha1
+         */
+        digestAlgorithm?: string;
         /**
          * 接口调用成功的回调函数
          */
@@ -1226,6 +1315,70 @@ declare var wx: {
                     
     onNetworkStatusChange(callback: Function): void;
                     
+    setScreenBrightness(obj: {
+        /**
+         * 屏幕亮度值，范围 0~1，0 最暗，1 最亮
+         */
+        value: number;
+        /**
+         * 接口调用成功
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    getScreenBrightness(obj: {
+        /**
+         * 接口调用成功
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    vibrateLong(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    vibrateShort(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
     /**
      * 监听加速度数据，频率：5次/秒，接口调用后会自动开始监听，可使用 wx.stopAccelerometer 停止监听。
      */
@@ -1319,6 +1472,10 @@ declare var wx: {
      * 调起客户端扫码界面，扫码成功后返回对应的结果
      */
     scanCode(obj: {
+        /**
+         * 是否只能从相机扫码，不允许从相册选择图片
+         */
+        onlyFromCamera?: boolean;
         /**
          * 接口调用成功的回调函数，返回内容详见返回参数说明。
          */
@@ -1420,6 +1577,14 @@ declare var wx: {
          */
         services?: Array<any>;
         /**
+         * 是否允许重复上报同一设备， 如果允许重复上报，则onDeviceFound 方法会多次上报同一设备，但是 RSSI 值会有不同
+         */
+        allowDuplicatesKey?: boolean;
+        /**
+         * 上报设备的间隔，默认为0，意思是找到新设备立即上报，否则根据传入的间隔上报
+         */
+        interval?: number;
+        /**
          * 成功则返回本机蓝牙适配器状态
          */
         success: Function;
@@ -1449,10 +1614,6 @@ declare var wx: {
     }): void;
                     
     getBluetoothDevices(obj: {
-        /**
-         * 蓝牙设备主 service 的 uuid 列表
-         */
-        services?: Array<any>;
         /**
          * 成功则返回本机蓝牙适配器状态
          */
@@ -1609,7 +1770,7 @@ declare var wx: {
          */
         characteristicId: string;
         /**
-         * 蓝牙设备特征值对应的二进制值
+         * 蓝牙设备特征值对应的二进制值（注意：vConsole 无法打印出 ArrayBuffer 类型数据）
          */
         value: undefined;
         /**
@@ -1660,6 +1821,204 @@ declare var wx: {
     onBLEConnectionStateChange(callback: Function): void;
                     
     onBLECharacteristicValueChange(callback: Function): void;
+                    
+    startBeaconDiscovery(obj: {
+        /**
+         * iBeacon设备广播的 uuids
+         */
+        uuids: string[];
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    stopBeaconDiscovery(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    getBeacons(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    onBeaconUpdate(callback: Function): void;
+                    
+    onBeaconServiceChange(callback: Function): void;
+                    
+    onUserCaptureScreen(callback: Function): void;
+                    
+    addPhoneContact(obj: {
+        /**
+         * 头像本地文件路径
+         */
+        photoFilePath?: string;
+        /**
+         * 昵称
+         */
+        nickName?: string;
+        /**
+         * 姓氏
+         */
+        lastName?: string;
+        /**
+         * 中间名
+         */
+        middleName?: string;
+        /**
+         * 名字
+         */
+        firstName: string;
+        /**
+         * 备注
+         */
+        remark?: string;
+        /**
+         * 手机号
+         */
+        mobilePhoneNumber?: string;
+        /**
+         * 微信号
+         */
+        weChatNumber?: string;
+        /**
+         * 联系地址国家
+         */
+        addressCountry?: string;
+        /**
+         * 联系地址省份
+         */
+        addressState?: string;
+        /**
+         * 联系地址城市
+         */
+        addressCity?: string;
+        /**
+         * 联系地址街道
+         */
+        addressStreet?: string;
+        /**
+         * 联系地址邮政编码
+         */
+        addressPostalCode?: string;
+        /**
+         * 公司
+         */
+        organization?: string;
+        /**
+         * 职位
+         */
+        title?: string;
+        /**
+         * 工作传真
+         */
+        workFaxNumber?: string;
+        /**
+         * 工作电话
+         */
+        workPhoneNumber?: string;
+        /**
+         * 公司电话
+         */
+        hostNumber?: string;
+        /**
+         * 电子邮件
+         */
+        email?: string;
+        /**
+         * 网站
+         */
+        url?: string;
+        /**
+         * 工作地址国家
+         */
+        workAddressCountry?: string;
+        /**
+         * 工作地址省份
+         */
+        workAddressState?: string;
+        /**
+         * 工作地址城市
+         */
+        workAddressCity?: string;
+        /**
+         * 工作地址街道
+         */
+        workAddressStreet?: string;
+        /**
+         * 工作地址邮政编码
+         */
+        workAddressPostalCode?: string;
+        /**
+         * 住宅传真
+         */
+        homeFaxNumber?: string;
+        /**
+         * 住宅电话
+         */
+        homePhoneNumber?: string;
+        /**
+         * 住宅地址国家
+         */
+        homeAddressCountry?: string;
+        /**
+         * 住宅地址省份
+         */
+        homeAddressState?: string;
+        /**
+         * 住宅地址城市
+         */
+        homeAddressCity?: string;
+        /**
+         * 住宅地址街道
+         */
+        homeAddressStreet?: string;
+        /**
+         * 住宅地址邮政编码
+         */
+        homeAddressPostalCode?: string;
+        /**
+         * 接口调用成功
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
                     
     // # 界面 # 
     
@@ -1803,6 +2162,25 @@ declare var wx: {
         complete?: Function;
     }): void;
                     
+    setTopBarText(obj: {
+        /**
+         * 置顶栏文字内容
+         */
+        text: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
     /**
      * 动态设置当前页面的标题。
      */
@@ -1881,7 +2259,7 @@ declare var wx: {
                     
     reLaunch(obj: {
         /**
-         * 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'
+         * 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数
          */
         url: string;
         /**
@@ -1952,6 +2330,13 @@ declare var wx: {
         transformOrigin?: string;
     }): IAnimation;
                     
+    pageScrollTo(obj: {
+        /**
+         * 滚动到页面的目标位置（单位px）
+         */
+        scrollTop: number;
+    }): void;
+                    
     /**
      * 创建 canvas 绘图上下文（指定 canvasId）.Tip: 需要指定 canvasId，该绘图上下文只作用于对应的 <canvas/>
      */
@@ -1962,11 +2347,28 @@ declare var wx: {
      */
     canvasToTempFilePath(canvasId: string): void;
                     
+    startPullDownRefresh(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
     /**
      * 停止当前页面下拉刷新。
      */
     stopPullDownRefresh(): void;
                     
+    // # WXML节点信息 # 
+    
     // # 第三方平台 # 
     
     getExtConfig(obj: {
@@ -2024,14 +2426,37 @@ declare var wx: {
         complete?: Function;
     }): void;
                     
+    authorize(obj: {
+        /**
+         * 需要获取权限的scope，详见 scope 列表
+         */
+        scope: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
     /**
-     * 获取用户信息，需要先调用 wx.login 接口。
+     * 获取用户信息，withCredentials 为 true 时需要先调用 wx.login 接口。
      */
     getUserInfo(obj: {
         /**
          * 是否带上登录态信息
          */
         withCredentials?: boolean;
+        /**
+         * 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文
+         */
+        lang?: string;
         /**
          * 接口调用成功的回调函数
          */
@@ -2067,7 +2492,7 @@ declare var wx: {
          */
         signType: string;
         /**
-         * 签名,具体签名方案参见微信公众号支付帮助文档;
+         * 签名,具体签名方案参见小程序支付接口文档;
          */
         paySign: string;
         /**
@@ -2101,7 +2526,7 @@ declare var wx: {
                     
     addCard(obj: {
         /**
-         * 需要添加的卡券列表
+         * 需要添加的卡券列表，列表内对象说明请参见请求对象说明
          */
         cardList: undefined;
         /**
@@ -2120,7 +2545,7 @@ declare var wx: {
                     
     openCard(obj: {
         /**
-         * 需要打开的卡券列表
+         * 需要打开的卡券列表，列表内参数详见openCard 请求对象说明
          */
         cardList: undefined;
         /**
@@ -2152,12 +2577,129 @@ declare var wx: {
         complete?: Function;
     }): void;
                     
-    // # 数据分析 # 
+    getSetting(obj: {
+        /**
+         * 接口调用成功的回调函数，返回内容详见返回参数说明。
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    getWeRunData(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    navigateToMiniProgram(obj: {
+        /**
+         * 要打开的小程序 appId
+         */
+        appId: string;
+        /**
+         * 打开的页面路径，如果为空则打开首页
+         */
+        path?: string;
+        /**
+         * 需要传递给目标小程序的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到这份数据。详情
+         */
+        extraData?: any;
+        /**
+         * 要打开的小程序版本，有效值 develop（开发版），trial（体验版），release（正式版） ，仅在当前小程序为开发版或体验版时此参数有效；如果当前小程序是体验版或正式版，则打开的小程序必定是正式版。默认值 release
+         */
+        envVersion?: string;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    chooseInvoiceTitle(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    checkIsSupportSoterAuthentication(obj: {
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
+                    
+    // # 数据 # 
     
+    /**
+     * 自定义分析数据上报接口。使用前，需要在小程序管理后台自定义分析中新建事件，配置好事件名与字段。
+     */
+    reportAnalytics(eventName: string,  data: string, ): void;
+                    
     // # 拓展接口 # 
     
     arrayBufferToBase64(arrayBuffer: string): void;
                     
     base64ToArrayBuffer(base64: string): void;
+                    
+    // # 调试接口 # 
+    
+    setEnableDebug(obj: {
+        /**
+         * 是否打开调试
+         */
+        enableDebug: boolean;
+        /**
+         * 接口调用成功的回调函数
+         */
+        success?: Function;
+        /**
+         * 接口调用失败的回调函数
+         */
+        fail?: Function;
+        /**
+         * 接口调用结束的回调函数（调用成功、失败都会执行）
+         */
+        complete?: Function;
+    }): void;
                     
 }
