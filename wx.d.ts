@@ -1092,7 +1092,7 @@ declare var wx: {
     /**
      * 将 data 存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口。
      */
-    setStorageSync(key: string, data: any, ): void;
+    setStorageSync(key: string, data: any ): void;
                     
     /**
      * 从本地缓存中异步获取指定 key 对应的内容。
@@ -2673,7 +2673,7 @@ declare var wx: {
     /**
      * 自定义分析数据上报接口。使用前，需要在小程序管理后台自定义分析中新建事件，配置好事件名与字段。
      */
-    reportAnalytics(eventName: string,  data: string, ): void;
+    reportAnalytics(eventName: string,  data: string ): void;
                     
     // # 拓展接口 # 
     
