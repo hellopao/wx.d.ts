@@ -15,5 +15,11 @@
     "@types/request": "0.0.33",
     "cheerio": "^0.22.0",
     "request": "^2.75.0"
+  },
+  "devDependencies": {
+    "fs-extra": "^6.0.1"
+  },
+  "bin": {
+    "wx-d-ts-copy": "./bin/copy.js"
   }
 }

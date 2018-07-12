@@ -4,6 +4,11 @@ const fs = require('fs');
 
 const cheerio = require('cheerio');
 const request = require('request');
+const { resolve } = require('path');
+
+const resolveLocalPath = src => {
+    return resolve(__dirname, src);
+}
 
 const Types = {
     "string": "string",
@@ -24,9 +29,9 @@ const Types = {
 const ApiDocUrl = "http://mp.weixin.qq.com/debug/wxadoc/dev/api/";
 
 const isFunctionNeedToBePromisified = function(funcName) {
-    return [ "clearStorage", "hideToast", "showNavigationBarLoading", "hideNavigationBarLoading", "drawCanvas", "canvasToTempFilePath", "hideKeyboard" ].indexOf(funcName) === -1 
-        && !/^(on|create|stop|pause|close)/.test(funcName) 
-        && !/\w+Sync$/.test(funcName);  
+    return [ "clearStorage", "hideToast", "showNavigationBarLoading", "hideNavigationBarLoading", "drawCanvas", "canvasToTempFilePath", "hideKeyboard" ].indexOf(funcName) === -1
+        && !/^(on|create|stop|pause|close)/.test(funcName)
+        && !/\w+Sync$/.test(funcName);
 }
 
 const readFile = function(src) {
@@ -172,10 +177,10 @@ const getApiContent = function (api) {
 const getDefinitions = function(apiList) {
     let list = [];
     let dts = `declare var wx: {`;
-    
+
         apiList.forEach(cat => {
             dts += `
-    // # ${cat.name} # 
+    // # ${cat.name} #
     `;
 
             cat.items.forEach(item => {
@@ -255,10 +260,10 @@ const getDefinitions = function(apiList) {
 const getPromisifiedDefinitions = function(apiList) {
         let list = [];
         let dts = `declare var wx: {`;
-    
+
         apiList.forEach(cat => {
             dts += `
-    // # ${cat.name} # 
+    // # ${cat.name} #
     `;
 
             cat.items.forEach(item => {
@@ -341,7 +346,7 @@ const getPromisifiedDefinitions = function(apiList) {
         return dts;
 };
 
-getApiList(ApiDocUrl)
+module.exports = getApiList(ApiDocUrl)
     .then(apiList => {
         //apiList.splice(1);
         return Promise.all(apiList.map(category => {
@@ -360,12 +365,12 @@ getApiList(ApiDocUrl)
         return [getDefinitions(apiList), getPromisifiedDefinitions(apiList)]
     })
     .then(([dts, pdts]) => {
-        return readFile('./definitions.tpl')
+        return readFile(resolveLocalPath('./definitions.tpl'))
             .then(data => {
                 data = '// generate time:'+ new Date().toLocaleString()+' \n' + data;
                 dts = dts.replace(/### wx\./g,'');
                 pdts = pdts.replace(/### wx\./g,'');
-                return Promise.all([writeFile('./wx.d.ts', data + dts), writeFile('./wxPromise.d.ts', data + pdts)]);
+                return Promise.all([writeFile(resolveLocalPath('./wx.d.ts'), data + dts), writeFile(resolveLocalPath('./wxPromise.d.ts'), data + pdts)]);
             })
     })
     .then(() => {
