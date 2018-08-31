@@ -1119,7 +1119,7 @@ declare var wx: {
     /**
      * 从本地缓存中同步获取指定 key 对应的内容。
      */
-    getStorageSync(key: string): void;
+    getStorageSync(key: string): any;
                     
     /**
      * 异步获取当前storage的相关信息
@@ -1142,7 +1142,7 @@ declare var wx: {
     /**
      * 同步获取当前storage的相关信息
      */
-    getStorageInfoSync(): void;
+    getStorageInfoSync(): any;
                     
     /**
      * 从本地缓存中异步移除指定 key 。
