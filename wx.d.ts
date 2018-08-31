@@ -1142,7 +1142,7 @@ declare var wx: {
     /**
      * 同步获取当前storage的相关信息
      */
-    getStorageInfoSync(): void;
+    getStorageInfoSync(): any;
                     
     /**
      * 从本地缓存中异步移除指定 key 。
